@@ -47,7 +47,7 @@ public class WorldManager : MonoBehaviour
 		//Initialize Player at given start position
 		PlayerInst = (GameObject)Object.Instantiate(PlayerPrefab,
 		                                            new Vector3(startX,
-		            								PlayerPrefab.transform.position.y,
+		            								start.position.y + 1f,
 		            								startZ),
 		                                            PlayerPrefab.transform.rotation);
 
@@ -61,13 +61,7 @@ public class WorldManager : MonoBehaviour
 		model.PosX = posX;
 
 		//Texture the cube appropriately.
-		PlayerInst.transform.FindChild("Top").GetComponent<Renderer>().material.mainTexture = Resources.Load("player_" + top.ToString()) as Texture2D;
-		PlayerInst.transform.FindChild("Bottom").GetComponent<Renderer>().material.mainTexture = Resources.Load("player_" + bottom.ToString()) as Texture2D;
-		PlayerInst.transform.FindChild("NegZ").GetComponent<Renderer>().material.mainTexture = Resources.Load("player_" + negZ.ToString()) as Texture2D;
-		PlayerInst.transform.FindChild("PosZ").GetComponent<Renderer>().material.mainTexture = Resources.Load("player_" + posZ.ToString()) as Texture2D;
-		PlayerInst.transform.FindChild("NegX").GetComponent<Renderer>().material.mainTexture = Resources.Load("player_" + negX.ToString()) as Texture2D;
-		PlayerInst.transform.FindChild("PosX").GetComponent<Renderer>().material.mainTexture = Resources.Load("player_" + posX.ToString()) as Texture2D;
-		PlayerInst.GetComponent<Controller> ().SetFaces ();
+		TextureCubeFaces ();
 
 		//open start UI panel
 		StartLevel();
@@ -254,4 +248,21 @@ private void HandleInput() {
 		WinUI.gameObject.SetActive(true);
 	}
 
+	private void TextureCubeFaces()
+	{
+		TextureCubeFace ("Top", top);
+		TextureCubeFace ("Bottom", bottom);
+		TextureCubeFace ("NegZ", negZ);
+		TextureCubeFace ("PosZ", posZ);
+		TextureCubeFace ("PosX", posX);
+		TextureCubeFace ("NegX", negX);
+		PlayerInst.GetComponent<Controller> ().SetFaces ();
+	}
+
+	private void TextureCubeFace(string dir, PlayerFaceType type)
+	{
+		if (type != PlayerFaceType.none) {
+			PlayerInst.transform.FindChild (dir).GetComponent<Renderer> ().material.mainTexture = Resources.Load ("player_" + type.ToString ()) as Texture2D;
+		}
+	}
 }
