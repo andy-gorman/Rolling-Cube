@@ -22,23 +22,23 @@ public class Controller : MonoBehaviour {
 		get {return lastMove_; }
 	}
 	private bool dead_;
-	public bool Dead 
+	public bool Dead
 	{
 		get { return dead_;}
 	}
 
-	void Start() 
+	void Start()
 	{
 		moving = false;
 	}
 
-	void Update() 
+	void Update()
 	{
 	}
 
 
 	//TODO: Make this function less crappy.
-	public void SetFaces() 
+	public void SetFaces()
 	{
 		SetFace (myCube.Top, "Top");
 		SetFace (myCube.Bottom, "Bottom");
@@ -56,33 +56,170 @@ public class Controller : MonoBehaviour {
 	}
 
 	//BEGIN ROLLING METHODS
-
-	public void RollLeft() 
+	public void RollLeft()
 	{
 		myCube.roll(1);
-		StartCoroutine (Roll(0, -.5f, -.5f, Vector3.forward, "left"));
+		StartCoroutine (Roll(0, -.5f, -.5f, Vector3.forward, "left",false));
 		lastMove_ = Direction.negX;
 	}
 
-	public void RollRight() 
+	public void RollRight()
 	{
 		myCube.roll(2);
-		StartCoroutine (Roll(0, -.5f, .5f, -Vector3.forward, "right"));
+		StartCoroutine (Roll(0, -.5f, .5f, -Vector3.forward, "right",false));
 		lastMove_ = Direction.posX;
 	}
 
-	public void RollForward() 
+	public void RollForward()
 	{
 		myCube.roll(3);
-		StartCoroutine (Roll (.5f, -.5f, 0, Vector3.right, "forward"));
+		StartCoroutine (Roll (.5f, -.5f, 0, Vector3.right, "forward",false));
 		lastMove_ = Direction.posZ;
 	}
 
-	public void RollBackward() 
+	public void RollBackward()
 	{
 		myCube.roll(4);
-		StartCoroutine (Roll (-.5f, -.5f, 0, -Vector3.right, "backward"));
+		StartCoroutine (Roll (-.5f, -.5f, 0, -Vector3.right, "backward",false));
 		lastMove_ = Direction.negZ;
+	}
+
+	//upstair roll
+
+	public void RollLeftUp()
+	{
+		myCube.roll(1);
+		myCube.roll(1);
+		StartCoroutine (Roll(0, .5f, -.5f, Vector3.forward, "leftUp",true));
+		lastMove_ = Direction.negX;
+	}
+
+	public void RollRightUp()
+	{
+		myCube.roll(2);
+		myCube.roll(2);
+		StartCoroutine (Roll(0, .5f, .5f, -Vector3.forward, "rightUp",true));
+		lastMove_ = Direction.posX;
+	}
+
+	public void RollForwardUp()
+	{
+		myCube.roll(3);
+		myCube.roll(3);
+		StartCoroutine (Roll (.5f, .5f, 0, Vector3.right, "forwardUp",true));
+		lastMove_ = Direction.posZ;
+	}
+
+	public void RollBackwardUp()
+	{
+		myCube.roll(4);
+		myCube.roll(4);
+		StartCoroutine (Roll (-.5f, .5f, 0, -Vector3.right, "backwardUp",true));
+		lastMove_ = Direction.negZ;
+	}
+
+	//downstair roll
+	public void RollLeftDown()
+	{
+		myCube.roll(1);
+		myCube.roll(1);
+		StartCoroutine (Roll(0, -.5f, -.5f, Vector3.forward, "leftDown",true));
+		lastMove_ = Direction.negX;
+	}
+
+	public void RollRightDown()
+	{
+		myCube.roll(2);
+		myCube.roll(2);
+		StartCoroutine (Roll(0, -.5f, .5f, -Vector3.forward, "rightDown",true));
+		lastMove_ = Direction.posX;
+	}
+
+	public void RollForwardDown()
+	{
+		myCube.roll(3);
+		myCube.roll(3);
+		StartCoroutine (Roll (.5f, -.5f, 0, Vector3.right, "forwardDown",true));
+		lastMove_ = Direction.posZ;
+	}
+
+	public void RollBackwardDown()
+	{
+		myCube.roll(4);
+		myCube.roll(4);
+		StartCoroutine (Roll (-.5f, -.5f, 0, -Vector3.right, "backwardDown",true));
+		lastMove_ = Direction.negZ;
+	}
+
+	//roll
+
+	IEnumerator Roll(float fwdWeight, float upWeight, float xWeight, Vector3 rotateAxis, string dir,bool upOrDown) {
+		float totalRotation = 0f;
+		moving = true;
+		float startX = transform.position.x;
+		float startY = transform.position.y;
+		float startZ = transform.position.z;
+		float maxRotate;
+		if (upOrDown) {
+			maxRotate = 180f;
+		} else {
+			maxRotate = 90f;
+		}
+		Vector3 point = transform.position + (fwdWeight * Vector3.forward + upWeight * Vector3.up + xWeight * Vector3.right);
+
+		while (totalRotation < maxRotate) {
+			// we calc the spinamount but make sure it won't shoot over the 90 degrees
+			float spinAmount = Mathf.Min (Time.deltaTime * rollSpeed, maxRotate - totalRotation);
+
+			// we rotate around one of the edges of the cube (the stationary one of course)
+			transform.RotateAround (point, rotateAxis, spinAmount);
+
+			// add to amount of spin in this update the total rotation
+			totalRotation += spinAmount;
+			yield return 0;
+		}
+		Vector3 pos = transform.position;
+
+		if (dir == "left") {
+			pos.x = startX - 1.0f;
+			pos.y = startY;
+		} else if (dir == "right") {
+			pos.x = startX + 1.0f;
+			pos.y = startY;
+		} else if (dir == "forward") {
+			pos.z = startZ + 1.0f;
+			pos.y = startY;
+		} else  if (dir == "backward") {
+			pos.z = startZ - 1.0f;
+			pos.y = startY;
+		} else if (dir == "leftUp"){
+			pos.x = startX - 1.0f;
+			pos.y = startY + 1.0f;
+		} else if (dir == "rightUp"){
+			pos.x = startX + 1.0f;
+			pos.y = startY + 1.0f;
+		} else if (dir == "forwardUp"){
+			pos.z = startZ + 1.0f;
+			pos.y = startY + 1.0f;
+		} else if (dir == "backwardUp"){
+			pos.z = startZ - 1.0f;
+			pos.y = startY + 1.0f;
+		} else if (dir == "leftDown"){
+			pos.x = startX - 1.0f;
+			pos.y = startY - 1.0f;
+		} else if (dir == "rightDown"){
+			pos.x = startX + 1.0f;
+			pos.y = startY - 1.0f;
+		} else if (dir == "forwardDown"){
+			pos.z = startZ + 1.0f;
+			pos.y = startY - 1.0f;
+		} else if (dir == "backwardDown"){
+			pos.z = startZ - 1.0f;
+			pos.y = startY - 1.0f;
+		}
+
+		transform.position = pos;
+		moving = false;
 	}
 
 	IEnumerator Roll(float fwdWeight, float upWeight, float xWeight, Vector3 rotateAxis, string dir) {
@@ -95,7 +232,7 @@ public class Controller : MonoBehaviour {
 
 			// we rotate around one of the edges of the cube (the stationary one of course)
 			transform.RotateAround ((transform.position + (fwdWeight * Vector3.forward + upWeight * Vector3.up + xWeight * Vector3.right)), rotateAxis, spinAmount);
-			
+
 			// add to amount of spin in this update the total rotation
 			totalRotation += spinAmount;
 			Vector3 tmp = transform.position;
@@ -104,7 +241,7 @@ public class Controller : MonoBehaviour {
 			yield return 0;
 		}
 		Vector3 pos = transform.position;
-		
+
 		if (dir == "left") {
 			pos.x = startX - 1.0f;
 		} else if (dir == "right") {
@@ -112,7 +249,7 @@ public class Controller : MonoBehaviour {
 		} else if (dir == "forward") {
 			pos.z = startZ + 1.0f;
 		} else  if (dir == "backward") {
-			pos.z = startZ - 1.0f; 
+			pos.z = startZ - 1.0f;
 		}
 		pos.y = 0.5f; //Maybe change this eventually but its probably fine.
 		transform.position = pos;
@@ -151,12 +288,12 @@ public class Controller : MonoBehaviour {
 		lastMove_ = Direction.negX;
 	}
 
-	IEnumerator Slide(float endX, float endZ) 
+	IEnumerator Slide(float endX, float endZ)
 	{
 		float curX = transform.position.x; float curZ = transform.position.z;
 		float distToCover = Mathf.Sqrt((endX - curX) * (endX - curX) + (endZ - curZ) * (endZ - curZ));
 		Vector3 translation = new Vector3(endX - curX, 0f, endZ - curZ);
-		
+
 		float distTraveled = 0f;
 		moving = true;
 		while(distTraveled < distToCover){
@@ -206,4 +343,3 @@ public class Controller : MonoBehaviour {
 	}
 
 }
-	

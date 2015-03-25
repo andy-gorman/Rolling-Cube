@@ -45,9 +45,9 @@ public class WorldManager : MonoBehaviour
 		Transform start = System.Array.Find(tiles, tile => tile.TerrType == TerrainType.start).transform;
 		startX = start.position.x; startZ = start.position.z;
 		//Initialize Player at given start position
-		PlayerInst = (GameObject)Object.Instantiate(PlayerPrefab, 
+		PlayerInst = (GameObject)Object.Instantiate(PlayerPrefab,
 		                                            new Vector3(startX,
-		            								PlayerPrefab.transform.position.y, 
+		            								PlayerPrefab.transform.position.y,
 		            								startZ),
 		                                            PlayerPrefab.transform.rotation);
 
@@ -77,7 +77,7 @@ public class WorldManager : MonoBehaviour
 
 	}
 
-	void Update() 
+	void Update()
 	{
 		//Ignore Input until GameState is set to playing.
 		if (IsPlaying) {
@@ -98,49 +98,95 @@ public class WorldManager : MonoBehaviour
 		Application.LoadLevel(NextSceneName);
 	}
 
-	private void HandleInput() {
+private void HandleInput() {
 		float curX = PlayerInst.transform.position.x;
+		float curY = PlayerInst.transform.position.y - 1.0f;
 		float curZ = PlayerInst.transform.position.z;
 		Controller controller = PlayerInst.GetComponent<Controller> ();
 
 		//Move the player to corresponding direction if the level allows them to.
 		if (Input.GetButtonDown ("Left")) {
-			if (CanMove (curX - 1, curZ)) {
+			if (CanMove (curX - 1, curY, curZ) == 0) {
 				controller.RollLeft();
 			}
+			else if(CanMove (curX - 1, curY, curZ) == 1) {
+				controller.RollLeftUp();
+			}
+			else if(CanMove (curX - 1, curY, curZ) == -1) {
+				controller.RollLeftDown();
+			}
+
 		} else if (Input.GetButtonDown ("Right")) {
-			if (CanMove (curX + 1, curZ)) {
+			if (CanMove (curX + 1, curY, curZ) == 0) {
 				controller.RollRight ();
 			}
+			else if (CanMove (curX + 1, curY, curZ) == 1) {
+				controller.RollRightUp ();
+			}
+			else if (CanMove (curX + 1, curY, curZ) == -1) {
+				controller.RollRightDown ();
+			}
 		} else if (Input.GetButtonDown ("Forward")) {
-			if (CanMove (curX, curZ + 1)) {
+			if (CanMove (curX, curY, curZ + 1) == 0) {
 				controller.RollForward();
 			}
+			else if (CanMove (curX, curY, curZ + 1) == 1) {
+				controller.RollForwardUp();
+			}
+			else if (CanMove (curX, curY, curZ + 1) == -1) {
+				controller.RollForwardDown();
+			}
 		} else if (Input.GetButtonDown ("Backward")) {
-			if (CanMove (curX, curZ - 1)) {
+			if (CanMove (curX, curY, curZ - 1) == 0) {
 				controller.RollBackward ();
+			}
+			else if (CanMove (curX, curY, curZ - 1) == 1) {
+				controller.RollBackwardUp ();
+			}
+			else if (CanMove (curX, curY, curZ - 1) == -1) {
+				controller.RollBackwardDown ();
 			}
 		}
 	}
 
 	//Essentially Checks if there is a block in the given x, z location.
-	private bool CanMove(float x, float z)
+	private int CanMove(float x, float y, float z)
 	{
-		return System.Array.Exists (tiles, 
-		                   tile => tile.transform.position.x == x
-		                          && tile.transform.position.z == z);
+		if (System.Array.Exists (tiles,
+		                        tile => tile.transform.position.x == x
+			&& tile.transform.position.z == z
+			&& tile.transform.position.y == (y + 1.0f))) {
+			Debug.Log ("find upper");
+			return 1;
+		} else if (System.Array.Exists (tiles,
+		                              tile => tile.transform.position.x == x
+			&& tile.transform.position.z == z
+			&& tile.transform.position.y == y)) {
+			Debug.Log ("find parallel");
+			return 0;
+		} else if (System.Array.Exists (tiles,
+		                              tile => tile.transform.position.x == x
+			&& tile.transform.position.z == z
+			&& tile.transform.position.y == (y - 1.0f))) {
+			Debug.Log ("find lower");
+			return -1;
+		} else {
+			//means no block adjacent
+			return 9;
+		}
 	}
 
-	private TerrainType GetTileAtLoc(float x, float z) 
+	private TerrainType GetTileAtLoc(float x, float y, float z)
 	{
 		return System.Array.Find (tiles, tile => tile.transform.position.x == x
-		                          && tile.transform.position.z == z).TerrType;
+		                          && tile.transform.position.y == y && tile.transform.position.z == z).TerrType;
 	}
 
 	private void CheckFaces() {
 		float x = PlayerInst.transform.position.x;
 		float z = PlayerInst.transform.position.z;
-		switch (GetTileAtLoc(x, z)) {
+		float y = PlayerInst.transform.position.y - 1;
+		switch (GetTileAtLoc(x, y, z)) {
 			case TerrainType.fire:
 				if(PlayerInst.GetComponent<PlayerCube>().Bottom != PlayerFaceType.ice) {
 					PlayerInst.GetComponent<Controller>().Sink ();
@@ -198,14 +244,14 @@ public class WorldManager : MonoBehaviour
 		StartUI.gameObject.SetActive(false);
 	}
 
-	/* 
+	/*
 	 * TODO: Make a you win screen with next level button.
 	 * Have it pop up here.
 	 */
 
-	private void WinLevel() 
+	private void WinLevel()
 	{
 		WinUI.gameObject.SetActive(true);
 	}
-	
+
 }
