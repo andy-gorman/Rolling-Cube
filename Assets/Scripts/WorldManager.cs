@@ -186,7 +186,7 @@ private void HandleInput() {
 	private void CheckFaces() {
 		float x = PlayerInst.transform.position.x;
 		float z = PlayerInst.transform.position.z;
-		float y = PlayerInst.transform.position.y - 1;
+		float y = PlayerInst.transform.position.y - 1f;
 		switch (GetTileAtLoc(x, y, z)) {
 		case TerrainType.fire:
 			if(PlayerInst.GetComponent<PlayerCube>().Bottom != PlayerFaceType.ice) {
@@ -194,20 +194,29 @@ private void HandleInput() {
 			}
 			break;
 		case TerrainType.ice:
+			y += 1f;
 			if(PlayerInst.GetComponent<PlayerCube>().Bottom != PlayerFaceType.spikes) {
 				switch(PlayerInst.GetComponent<Controller>().LastMove) {
-					case Direction.negX:
+				case Direction.negX:
+					if(GetTileAtLoc(x - 1, y, z) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlideNegX();
-						break;
-					case Direction.posX:
+					}
+					break;
+				case Direction.posX:
+					if(GetTileAtLoc(x + 1, y, z) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlidePosX();
-						break;
-					case Direction.negZ:
+					}
+					break;
+				case Direction.negZ:
+					if(GetTileAtLoc(x, y, z - 1) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlideNegZ();
-						break;
-					case Direction.posZ:
+					}
+					break;
+				case Direction.posZ:
+					if(GetTileAtLoc(x, y, z + 1) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlidePosZ();
-						break;
+					}
+					break;
 				}
 			}
 			break;
