@@ -171,7 +171,13 @@ private void HandleInput() {
 		}
 	}
 
-	private TerrainType GetTileAtLoc(float x, float y, float z)
+	private GroundTile GetTileAtLoc(float x, float y, float z)
+	{
+		return System.Array.Find (tiles, tile => tile.transform.position.x == x
+		                   && tile.transform.position.y == y && tile.transform.position.z == z);	
+	}
+	
+	private TerrainType GetTileTerrAtLoc(float x, float y, float z)
 	{
 		
 		GroundTile tile_ = System.Array.Find (tiles, tile => tile.transform.position.x == x
@@ -187,7 +193,7 @@ private void HandleInput() {
 		float x = PlayerInst.transform.position.x;
 		float z = PlayerInst.transform.position.z;
 		float y = PlayerInst.transform.position.y - 1f;
-		switch (GetTileAtLoc(x, y, z)) {
+		switch (GetTileTerrAtLoc(x, y, z)) {
 		case TerrainType.fire:
 			if(PlayerInst.GetComponent<PlayerCube>().Bottom != PlayerFaceType.ice) {
 				PlayerInst.GetComponent<Controller>().Sink ();
@@ -198,27 +204,37 @@ private void HandleInput() {
 			if(PlayerInst.GetComponent<PlayerCube>().Bottom != PlayerFaceType.spikes) {
 				switch(PlayerInst.GetComponent<Controller>().LastMove) {
 				case Direction.negX:
-					if(GetTileAtLoc(x - 1, y, z) == TerrainType.null_exist) {
+					if(GetTileTerrAtLoc(x - 1, y, z) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlideNegX();
 					}
 					break;
 				case Direction.posX:
-					if(GetTileAtLoc(x + 1, y, z) == TerrainType.null_exist) {
+					if(GetTileTerrAtLoc(x + 1, y, z) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlidePosX();
 					}
 					break;
 				case Direction.negZ:
-					if(GetTileAtLoc(x, y, z - 1) == TerrainType.null_exist) {
+					if(GetTileTerrAtLoc(x, y, z - 1) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlideNegZ();
 					}
 					break;
 				case Direction.posZ:
-					if(GetTileAtLoc(x, y, z + 1) == TerrainType.null_exist) {
+					if(GetTileTerrAtLoc(x, y, z + 1) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlidePosZ();
 					}
 					break;
 				}
 			}
+			break;
+		case TerrainType.teleport:
+			TeleportTile paired = (GetTileAtLoc(x, y, z) as TeleportTile).OtherEnd;
+			if(paired != null && !PlayerInst.GetComponent<Controller>().JustTeleported) {
+				Vector3 pairedLoc = paired.transform.position;
+				pairedLoc.y += 1;
+				StartCoroutine(PlayerInst.GetComponent<Controller>().TeleportTo(pairedLoc));
+			}/* else {
+				Debug.Log ("Doesn't have a paired teleporter");
+			}*/
 			break;
 		case TerrainType.null_exist:
 			RaycastHit hit;

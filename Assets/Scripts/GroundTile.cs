@@ -8,6 +8,7 @@ public enum TerrainType {
 	finish,
 	fire,
 	ice,
+	teleport,
 	null_exist
 }
 public class GroundTile : MonoBehaviour {

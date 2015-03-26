@@ -27,6 +27,11 @@ public class Controller : MonoBehaviour {
 	{
 		get { return dead_;}
 	}
+	private bool justTeleported_;
+	public bool JustTeleported
+	{
+		get { return justTeleported_; }
+	}
 
 	void Start()
 	{
@@ -157,6 +162,7 @@ public class Controller : MonoBehaviour {
 	IEnumerator Roll(float fwdWeight, float upWeight, float xWeight, Vector3 rotateAxis, string dir,bool upOrDown) {
 		float totalRotation = 0f;
 		moving = true;
+		justTeleported_ = false;
 		float startX = transform.position.x;
 		float startY = transform.position.y;
 		float startZ = transform.position.z;
@@ -373,6 +379,32 @@ public class Controller : MonoBehaviour {
 			yield return 0;
 		}
 		dead_ = true;
+	}
+
+	public IEnumerator TeleportTo(Vector3 location)
+	{
+		moving = true;
+		Color origColor = GetComponentsInChildren<MeshRenderer> ()[0].material.color;
+		float time = 0f;
+		while (GetComponentsInChildren<MeshRenderer>()[0].material.color.a != 0) {
+			foreach(MeshRenderer mr in GetComponentsInChildren<MeshRenderer>()) {
+				mr.material.color = Color.Lerp (origColor, Color.clear, time);
+			}
+			time += Time.deltaTime;
+			yield return 0;
+		}
+		time = 0f;
+		transform.position = location;
+
+		while (GetComponentsInChildren<MeshRenderer>()[0].material.color != origColor) {
+			foreach(MeshRenderer mr in GetComponentsInChildren<MeshRenderer>()) {
+				mr.material.color = Color.Lerp (Color.clear, origColor, time);
+			}
+			time += Time.deltaTime;
+			yield return 0;
+		}
+		moving = false;
+		justTeleported_ = true;
 	}
 
 }
