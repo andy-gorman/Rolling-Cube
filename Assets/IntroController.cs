@@ -37,7 +37,7 @@ public class IntroController : MonoBehaviour {
 		float time = 0; 
 		while (text.color.a != 0) {
 			text.color = Color.Lerp (textColor, Color.clear, time);
-			time += Time.deltaTime;
+			time += Time.deltaTime * deltaFade;
 			yield return 0;
 		}
 
@@ -45,7 +45,7 @@ public class IntroController : MonoBehaviour {
 		time = 0; 
 		while(text.color != textColor) {
 			text.color = Color.Lerp (Color.clear, textColor, time);
-			time += Time.deltaTime;
+			time += Time.deltaTime * deltaFade;
 			yield return 0;
 		}
 		CurMsgIndex++;

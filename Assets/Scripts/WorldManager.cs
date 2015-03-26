@@ -50,6 +50,7 @@ public class WorldManager : MonoBehaviour
 		            								start.position.y + 1f,
 		            								startZ),
 		                                            PlayerPrefab.transform.rotation);
+		PlayerInst.name = "Player";
 
 		//Set the faces of the model.
 		PlayerCube model = PlayerInst.GetComponent<PlayerCube> ();
@@ -172,8 +173,14 @@ private void HandleInput() {
 
 	private TerrainType GetTileAtLoc(float x, float y, float z)
 	{
-		return System.Array.Find (tiles, tile => tile.transform.position.x == x
-		                          && tile.transform.position.y == y && tile.transform.position.z == z).TerrType;
+		
+		GroundTile tile_ = System.Array.Find (tiles, tile => tile.transform.position.x == x
+		                          && tile.transform.position.y == y && tile.transform.position.z == z);
+		if (tile_ != null) {
+			return tile_.TerrType;
+		} else {
+			return TerrainType.null_exist;
+		}
 	}
 
 	private void CheckFaces() {
@@ -181,32 +188,41 @@ private void HandleInput() {
 		float z = PlayerInst.transform.position.z;
 		float y = PlayerInst.transform.position.y - 1;
 		switch (GetTileAtLoc(x, y, z)) {
-			case TerrainType.fire:
-				if(PlayerInst.GetComponent<PlayerCube>().Bottom != PlayerFaceType.ice) {
-					PlayerInst.GetComponent<Controller>().Sink ();
+		case TerrainType.fire:
+			if(PlayerInst.GetComponent<PlayerCube>().Bottom != PlayerFaceType.ice) {
+				PlayerInst.GetComponent<Controller>().Sink ();
+			}
+			break;
+		case TerrainType.ice:
+			if(PlayerInst.GetComponent<PlayerCube>().Bottom != PlayerFaceType.spikes) {
+				switch(PlayerInst.GetComponent<Controller>().LastMove) {
+					case Direction.negX:
+						PlayerInst.GetComponent<Controller>().SlideNegX();
+						break;
+					case Direction.posX:
+						PlayerInst.GetComponent<Controller>().SlidePosX();
+						break;
+					case Direction.negZ:
+						PlayerInst.GetComponent<Controller>().SlideNegZ();
+						break;
+					case Direction.posZ:
+						PlayerInst.GetComponent<Controller>().SlidePosZ();
+						break;
 				}
-				break;
-			case TerrainType.ice:
-				if(PlayerInst.GetComponent<PlayerCube>().Bottom != PlayerFaceType.spikes) {
-					switch(PlayerInst.GetComponent<Controller>().LastMove) {
-						case Direction.negX:
-							PlayerInst.GetComponent<Controller>().SlideNegX();
-							break;
-						case Direction.posX:
-							PlayerInst.GetComponent<Controller>().SlidePosX();
-							break;
-						case Direction.negZ:
-							PlayerInst.GetComponent<Controller>().SlideNegZ();
-							break;
-						case Direction.posZ:
-							PlayerInst.GetComponent<Controller>().SlidePosZ();
-							break;
-					}
-				}
-				break;
-			case TerrainType.finish:
-				WinLevel();
-				break;
+			}
+			break;
+		case TerrainType.null_exist:
+			RaycastHit hit;
+			if(Physics.Raycast (PlayerInst.transform.position, Vector3.down * 100, out hit)) {
+				float fallDist = hit.distance - 0.5f;
+				StartCoroutine(PlayerInst.GetComponent<Controller>().Fall(fallDist));
+			} else {
+				StartCoroutine(PlayerInst.GetComponent<Controller>().FallToDeath());
+			}
+			break;
+		case TerrainType.finish:
+			WinLevel();
+			break;
 		}
 	}
 

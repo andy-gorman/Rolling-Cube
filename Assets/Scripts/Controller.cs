@@ -8,6 +8,7 @@ public class Controller : MonoBehaviour {
 	public float delay = 2f;
 	public float slideSpeed;
 	public float sinkSpeed;
+	public float fallSpeed;
 
 
 	private bool moving;
@@ -339,6 +340,38 @@ public class Controller : MonoBehaviour {
 			yield return 0;
 		}
 		//Kill it.
+		dead_ = true;
+	}
+
+
+	public IEnumerator Fall(float distance)
+	{
+		moving = true;
+		Vector3 startPos = transform.position;
+		Vector3 endPos = transform.position; endPos.y -= distance;
+		float startTime = Time.time;
+		while (transform.position != endPos) {
+			float distCovered = (Time.time - startTime) * fallSpeed;
+			float fracJourney = distCovered / distance;
+			transform.position = Vector3.Lerp(startPos, endPos, fracJourney);
+			yield return 0;
+		}
+		moving = false;
+	}
+
+	public IEnumerator FallToDeath()
+	{
+		moving = true;
+		float distance = 10f;
+		Vector3 startPos = transform.position;
+		Vector3 endPos = transform.position; endPos.y -= distance;
+		float startTime = Time.time;
+		while (transform.position != endPos) {
+			float distCovered = (Time.time - startTime) * fallSpeed;
+			float fracJourney = distCovered / distance;
+			transform.position = Vector3.Lerp(startPos, endPos, fracJourney);
+			yield return 0;
+		}
 		dead_ = true;
 	}
 
