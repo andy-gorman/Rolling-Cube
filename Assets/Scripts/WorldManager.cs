@@ -14,6 +14,9 @@ public enum Direction
 public class WorldManager : MonoBehaviour
 {
 
+	private int direction;
+	private CameraMovement CM;
+
 	public GameObject PlayerPrefab;
 	//These hold the players face types. Settable in editor.
 	public PlayerFaceType top, bottom, posX, negX, posZ, negZ;
@@ -36,6 +39,12 @@ public class WorldManager : MonoBehaviour
 
 	void Start()
 	{
+		//determine the operating way ,1 for positive is z+, 2 for positive is x+ , 3 for positive is z-, 4 for positive is x-;
+		direction = 1;
+		CM = GameObject.Find ("Main Camera").GetComponent<CameraMovement> ();
+
+
+
 		//Load the level into an array.
 		//This isn't the most efficient way to parse the level,
 		//But they won't get to a size where it'll be a problem.
@@ -74,6 +83,7 @@ public class WorldManager : MonoBehaviour
 
 	void Update()
 	{
+		direction = CM.direction;
 		//Ignore Input until GameState is set to playing.
 		if (IsPlaying) {
 			if(!PlayerInst.GetComponent<Controller>().Moving) {
@@ -88,6 +98,10 @@ public class WorldManager : MonoBehaviour
 		}
 	}
 
+	void updateDirection(int dir){
+		direction = dir;
+	}
+
 	public void LoadNextLevel()
 	{
 		Application.LoadLevel(NextSceneName);
@@ -100,7 +114,10 @@ private void HandleInput() {
 		Controller controller = PlayerInst.GetComponent<Controller> ();
 
 		//Move the player to corresponding direction if the level allows them to.
-		if (Input.GetButtonDown ("Left")) {
+		if ( (Input.GetButtonDown ("Left") && direction == 1) ||
+		     (Input.GetButtonDown ("Backward") && direction == 2) ||
+		     (Input.GetButtonDown ("Right") && direction == 3) ||
+		     (Input.GetButtonDown ("Forward") && direction == 4) ) {
 			if (CanMove (curX - 1, curY, curZ) == 0) {
 				controller.RollLeft();
 			}
@@ -111,7 +128,10 @@ private void HandleInput() {
 				controller.RollLeftDown();
 			}
 
-		} else if (Input.GetButtonDown ("Right")) {
+		} else if ((Input.GetButtonDown ("Right") && direction == 1) ||
+		           (Input.GetButtonDown ("Forward") && direction == 2) ||
+		           (Input.GetButtonDown ("Left") && direction == 3) ||
+		           (Input.GetButtonDown ("Backward") && direction == 4)) {
 			if (CanMove (curX + 1, curY, curZ) == 0) {
 				controller.RollRight ();
 			}
@@ -121,7 +141,10 @@ private void HandleInput() {
 			else if (CanMove (curX + 1, curY, curZ) == -1) {
 				controller.RollRightDown ();
 			}
-		} else if (Input.GetButtonDown ("Forward")) {
+		} else if ((Input.GetButtonDown ("Forward") && direction == 1) ||
+		           (Input.GetButtonDown ("Left") && direction == 2) ||
+		           (Input.GetButtonDown ("Backward") && direction == 3) ||
+		           (Input.GetButtonDown ("Right") && direction == 4)) {
 			if (CanMove (curX, curY, curZ + 1) == 0) {
 				controller.RollForward();
 			}
@@ -131,7 +154,10 @@ private void HandleInput() {
 			else if (CanMove (curX, curY, curZ + 1) == -1) {
 				controller.RollForwardDown();
 			}
-		} else if (Input.GetButtonDown ("Backward")) {
+		} else if ((Input.GetButtonDown ("Backward") && direction == 1) ||
+		           (Input.GetButtonDown ("Right") && direction == 2) ||
+		           (Input.GetButtonDown ("Forward") && direction == 3) ||
+		           (Input.GetButtonDown ("Left") && direction == 4)) {
 			if (CanMove (curX, curY, curZ - 1) == 0) {
 				controller.RollBackward ();
 			}
@@ -151,19 +177,19 @@ private void HandleInput() {
 		                        tile => tile.transform.position.x == x
 			&& tile.transform.position.z == z
 			&& tile.transform.position.y == (y + 1.0f))) {
-			Debug.Log ("find upper");
+	//		Debug.Log ("find upper");
 			return 1;
 		} else if (System.Array.Exists (tiles,
 		                              tile => tile.transform.position.x == x
 			&& tile.transform.position.z == z
 			&& tile.transform.position.y == y)) {
-			Debug.Log ("find parallel");
+	//		Debug.Log ("find parallel");
 			return 0;
 		} else if (System.Array.Exists (tiles,
 		                              tile => tile.transform.position.x == x
 			&& tile.transform.position.z == z
 			&& tile.transform.position.y == (y - 1.0f))) {
-			Debug.Log ("find lower");
+	//		Debug.Log ("find lower");
 			return -1;
 		} else {
 			//means no block adjacent
