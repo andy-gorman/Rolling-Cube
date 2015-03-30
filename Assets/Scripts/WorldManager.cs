@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 
 public enum Direction
@@ -36,6 +37,7 @@ public class WorldManager : MonoBehaviour
 	}
 	private float startX, startZ;
 	private GroundTile[] tiles;
+	private GroundTile ToRemove;
 
 	void Start()
 	{
@@ -81,6 +83,8 @@ public class WorldManager : MonoBehaviour
 		//resetCamera
 		CM.resetCamera ();
 
+		//Set the
+		ToRemove = null;
 	}
 
 	void Update()
@@ -114,6 +118,7 @@ private void HandleInput() {
 		float curY = PlayerInst.transform.position.y - 1.0f;
 		float curZ = PlayerInst.transform.position.z;
 		Controller controller = PlayerInst.GetComponent<Controller> ();
+		GroundTile curTile = GetTileAtLoc (curX, curY, curZ);
 
 		//Move the player to corresponding direction if the level allows them to.
 		if ( (Input.GetButtonDown ("Left") && direction == 1) ||
@@ -122,12 +127,33 @@ private void HandleInput() {
 		     (Input.GetButtonDown ("Forward") && direction == 4) ) {
 			if (CanMove (curX - 1, curY, curZ) == 0) {
 				controller.RollLeft();
+				curTile.PlayerLeave();
+				if(ToRemove != null)
+				{
+					tiles = tiles.Where(tile=>tile != ToRemove).ToArray ();
+					ToRemove = null;
+				}
+				GetTileAtLoc (curX - 1, curY, curZ).PlayerLand ();
 			}
 			else if(CanMove (curX - 1, curY, curZ) == 1) {
 				controller.RollLeftUp();
+				curTile.PlayerLeave();
+				if(ToRemove != null)
+				{
+					tiles = tiles.Where(tile=>tile != ToRemove).ToArray();
+					ToRemove = null;
+				}
+				GetTileAtLoc(curX - 1, curY + 1, curZ).PlayerLand ();
 			}
 			else if(CanMove (curX - 1, curY, curZ) == -1) {
 				controller.RollLeftDown();
+				curTile.PlayerLeave();
+				if(ToRemove != null)
+				{
+					tiles = tiles.Where(tile=>tile != ToRemove).ToArray();
+					ToRemove = null;
+				}
+				GetTileAtLoc(curX - 1, curY - 1, curZ).PlayerLand ();
 			}
 
 		} else if ((Input.GetButtonDown ("Right") && direction == 1) ||
@@ -136,12 +162,33 @@ private void HandleInput() {
 		           (Input.GetButtonDown ("Backward") && direction == 4)) {
 			if (CanMove (curX + 1, curY, curZ) == 0) {
 				controller.RollRight ();
+				curTile.PlayerLeave();
+				if(ToRemove != null)
+				{
+					tiles = tiles.Where(tile=>tile != ToRemove).ToArray();
+					ToRemove = null;
+				}
+				GetTileAtLoc (curX + 1, curY, curZ).PlayerLand ();
 			}
 			else if (CanMove (curX + 1, curY, curZ) == 1) {
 				controller.RollRightUp ();
+				curTile.PlayerLeave();
+				if(ToRemove != null)
+				{
+					tiles = tiles.Where(tile=>tile != ToRemove).ToArray();
+					ToRemove = null;
+				}
+				GetTileAtLoc (curX + 1, curY + 1, curZ).PlayerLand ();
 			}
 			else if (CanMove (curX + 1, curY, curZ) == -1) {
 				controller.RollRightDown ();
+				curTile.PlayerLeave();
+				if(ToRemove != null)
+				{
+					tiles = tiles.Where(tile=>tile != ToRemove).ToArray();
+					ToRemove = null;
+				}
+				GetTileAtLoc(curX + 1, curY - 1, curZ).PlayerLand();
 			}
 		} else if ((Input.GetButtonDown ("Forward") && direction == 1) ||
 		           (Input.GetButtonDown ("Left") && direction == 2) ||
@@ -149,12 +196,33 @@ private void HandleInput() {
 		           (Input.GetButtonDown ("Right") && direction == 4)) {
 			if (CanMove (curX, curY, curZ + 1) == 0) {
 				controller.RollForward();
+				curTile.PlayerLeave();
+				if(ToRemove != null)
+				{
+					tiles = tiles.Where(tile=>tile != ToRemove).ToArray();
+					ToRemove = null;
+				}
+				GetTileAtLoc(curX, curY, curZ + 1).PlayerLand();
 			}
 			else if (CanMove (curX, curY, curZ + 1) == 1) {
 				controller.RollForwardUp();
+				curTile.PlayerLeave();
+				if(ToRemove != null)
+				{
+					tiles = tiles.Where(tile=>tile != ToRemove).ToArray();
+					ToRemove = null;
+				}
+				GetTileAtLoc(curX, curY + 1, curZ + 1).PlayerLand();
 			}
 			else if (CanMove (curX, curY, curZ + 1) == -1) {
 				controller.RollForwardDown();
+				curTile.PlayerLeave();
+				if(ToRemove != null)
+				{
+					tiles = tiles.Where(tile=>tile != ToRemove).ToArray();
+					ToRemove = null;
+				}
+				GetTileAtLoc(curX, curY - 1, curZ + 1).PlayerLand();
 			}
 		} else if ((Input.GetButtonDown ("Backward") && direction == 1) ||
 		           (Input.GetButtonDown ("Right") && direction == 2) ||
@@ -162,12 +230,33 @@ private void HandleInput() {
 		           (Input.GetButtonDown ("Left") && direction == 4)) {
 			if (CanMove (curX, curY, curZ - 1) == 0) {
 				controller.RollBackward ();
+				curTile.PlayerLeave();
+				if(ToRemove != null)
+				{
+					tiles = tiles.Where(tile=>tile != ToRemove).ToArray();
+					ToRemove = null;
+				}
+				GetTileAtLoc(curX, curY, curZ - 1).PlayerLand();
 			}
 			else if (CanMove (curX, curY, curZ - 1) == 1) {
 				controller.RollBackwardUp ();
+				curTile.PlayerLeave();
+				if(ToRemove != null)
+				{
+					tiles = tiles.Where(tile=>tile != ToRemove).ToArray();
+					ToRemove = null;
+				}
+				GetTileAtLoc(curX, curY + 1, curZ - 1).PlayerLand();
 			}
 			else if (CanMove (curX, curY, curZ - 1) == -1) {
 				controller.RollBackwardDown ();
+				curTile.PlayerLeave();
+				if(ToRemove != null)
+				{
+					tiles = tiles.Where(tile=>tile != ToRemove).ToArray();
+					ToRemove = null;
+				}
+				GetTileAtLoc(curX, curY - 1, curZ - 1).PlayerLand();
 			}
 		}
 	}
@@ -202,12 +291,12 @@ private void HandleInput() {
 	private GroundTile GetTileAtLoc(float x, float y, float z)
 	{
 		return System.Array.Find (tiles, tile => tile.transform.position.x == x
-		                   && tile.transform.position.y == y && tile.transform.position.z == z);	
+		                   && tile.transform.position.y == y && tile.transform.position.z == z);
 	}
-	
+
 	private TerrainType GetTileTerrAtLoc(float x, float y, float z)
 	{
-		
+
 		GroundTile tile_ = System.Array.Find (tiles, tile => tile.transform.position.x == x
 		                          && tile.transform.position.y == y && tile.transform.position.z == z);
 		if (tile_ != null) {
@@ -263,6 +352,12 @@ private void HandleInput() {
 			}/* else {
 				Debug.Log ("Doesn't have a paired teleporter");
 			}*/
+			break;
+		case TerrainType.temporary:
+			TempTile tile = GetTileAtLoc(x, y, z) as TempTile;
+			if(tile.Life <= 1) {
+				ToRemove = tile;
+			}
 			break;
 		case TerrainType.null_exist:
 			RaycastHit hit;

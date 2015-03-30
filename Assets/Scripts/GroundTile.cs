@@ -9,6 +9,7 @@ public enum TerrainType {
 	fire,
 	ice,
 	teleport,
+	temporary,
 	null_exist
 }
 public class GroundTile : MonoBehaviour {
@@ -20,6 +21,15 @@ public class GroundTile : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+
+	}
+
+	public virtual void PlayerLand()
+	{
+	}
+
+	public virtual void PlayerLeave()
+	{
 
 	}
 }

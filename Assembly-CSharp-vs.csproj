@@ -46,15 +46,16 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\IntroController.cs" />
      <Compile Include="Assets\Scripts\CameraMovement.cs" />
      <Compile Include="Assets\Scripts\Controller.cs" />
      <Compile Include="Assets\Scripts\Face.cs" />
      <Compile Include="Assets\Scripts\GameLevel.cs" />
      <Compile Include="Assets\Scripts\GroundTile.cs" />
+     <Compile Include="Assets\Scripts\IntroController.cs" />
      <Compile Include="Assets\Scripts\PlayerCube.cs" />
+     <Compile Include="Assets\Scripts\TeleportTile.cs" />
+     <Compile Include="Assets\Scripts\TempTile.cs" />
      <Compile Include="Assets\Scripts\WorldManager.cs" />
-     <Compile Include="Assets\TeleportTile.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Programming/UNITY/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
