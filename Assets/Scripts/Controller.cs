@@ -386,21 +386,19 @@ public class Controller : MonoBehaviour {
 		moving = true;
 		Color origColor = GetComponentsInChildren<MeshRenderer> ()[0].material.color;
 		float time = 0f;
-		while (GetComponentsInChildren<MeshRenderer>()[0].material.color.a != 0) {
-			foreach(MeshRenderer mr in GetComponentsInChildren<MeshRenderer>()) {
-				mr.material.color = Color.Lerp (origColor, Color.clear, time);
-			}
-			time += Time.deltaTime;
+		Vector3 full = transform.localScale;
+		Vector3 shrunk = new Vector3(0.0f, 0.0f, 0.0f);
+		while (transform.localScale.x > 0.0f) {
+			transform.localScale = Vector3.Lerp (full, shrunk, time);
+			time += Time.deltaTime * 2;
 			yield return 0;
 		}
 		time = 0f;
 		transform.position = location;
 
-		while (GetComponentsInChildren<MeshRenderer>()[0].material.color != origColor) {
-			foreach(MeshRenderer mr in GetComponentsInChildren<MeshRenderer>()) {
-				mr.material.color = Color.Lerp (Color.clear, origColor, time);
-			}
-			time += Time.deltaTime;
+		while (transform.localScale.x < full.x) {
+			transform.localScale = Vector3.Lerp(shrunk, full, time);
+			time += Time.deltaTime * 2;
 			yield return 0;
 		}
 		moving = false;
