@@ -26,8 +26,8 @@ public class CameraMovement : MonoBehaviour {
 
 	public int direction;
 
-	private float accumulatedH;
-	private float accumulatedV;
+//	private float accumulatedH;
+//	private float accumulatedV;
 	private Vector3 vec;
 
 	private Vector3 tempPos;
@@ -43,8 +43,8 @@ public class CameraMovement : MonoBehaviour {
 		direction = 1;
 		velocityX = 0.0f;
 		velocityY = 0.0f;
-		accumulatedH = 0.0f;
-		accumulatedV = 0.0f;
+//		accumulatedH = 0.0f;
+//		accumulatedV = 0.0f;
 		vec = Vector3.right;
 
 		player = GameObject.Find ("Player").transform;
@@ -76,14 +76,15 @@ public class CameraMovement : MonoBehaviour {
 			}
 			transform.position = tempPos + relCameraPos;
 
-			transform.RotateAround(player.position,Vector3.up,smooth*accumulatedH);
-			accumulatedH*= (1.0f-smooth);
+			transform.RotateAround(tempPos,Vector3.up,velocityX);
+	//		accumulatedH*= (1.0f-smooth);
 			
 			vec = Vector3.Cross(transform.position-tempPos,Vector3.up);
-			transform.RotateAround (player.position,vec,smooth*accumulatedV);
-			accumulatedV*= (1.0f-smooth);
+			transform.RotateAround (tempPos,vec,velocityY);
+	//		accumulatedV*= (1.0f-smooth);
 
 			relCameraPos = transform.position - tempPos;
+
 			if(fixObject != null && fix == true){
 				transform.LookAt(fixObject.transform);
 			}
@@ -95,14 +96,15 @@ public class CameraMovement : MonoBehaviour {
 				// horizontal 
 				velocityX = Input.GetAxis ("Mouse X");
 				velocityX *= xSpeed;
-				accumulatedH += velocityX;
+	//			accumulatedH += velocityX;
 				//transform.RotateAround (player.position,Vector3.up,velocityX);
 
 				// vertical
 				velocityY = Input.GetAxis ("Mouse Y");
 				velocityY *= ySpeed;
 				velocityY *= -1;
-				accumulatedV += velocityY;
+				vec = Vector3.Cross(transform.position-tempPos,Vector3.up);
+	//			accumulatedV += velocityY;
 				//transform.RotateAround (player.position,vec,velocityY);
 
 				//relCameraPos = transform.position - player.position;
