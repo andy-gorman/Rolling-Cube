@@ -39,11 +39,6 @@ public class WorldManager : MonoBehaviour
 
 	void Start()
 	{
-		//determine the operating way ,1 for positive is z+, 2 for positive is x+ , 3 for positive is z-, 4 for positive is x-;
-		direction = 1;
-		CM = GameObject.Find ("Main Camera").GetComponent<CameraMovement> ();
-
-
 
 		//Load the level into an array.
 		//This isn't the most efficient way to parse the level,
@@ -78,6 +73,13 @@ public class WorldManager : MonoBehaviour
 
 		//Allow World to Respond to input.
 		//IsPlaying = true;
+
+		//determine the operating way ,1 for positive is z+, 2 for positive is x+ , 3 for positive is z-, 4 for positive is x-;
+		direction = 1;
+		CM = GameObject.Find ("Main Camera").GetComponent<CameraMovement> ();
+
+		//resetCamera
+		CM.resetCamera ();
 
 	}
 
@@ -281,6 +283,7 @@ private void HandleInput() {
 		IsPlaying = false;
 		GameObject.Destroy(PlayerInst);
 		Start ();
+
 	}
 
 	/*
