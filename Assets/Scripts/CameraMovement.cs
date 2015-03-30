@@ -64,7 +64,7 @@ public class CameraMovement : MonoBehaviour {
 
 	void FixedUpdate ()
 	{
-		player = GameObject.Find ("Player").transform;
+		
 		if (player) {
 			tempPos = Vector3.Lerp(tempPos,player.position,smoothPos*Time.deltaTime);
 			transform.position = tempPos + relCameraPos;
@@ -134,6 +134,9 @@ public class CameraMovement : MonoBehaviour {
 			else if (judge1>0 && judge2<0){
 				direction = 2;
 			}
+		}
+		else {
+			player = GameObject.Find ("Player").transform;
 		}
 	}
 }
