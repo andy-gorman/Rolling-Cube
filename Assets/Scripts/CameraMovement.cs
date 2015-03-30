@@ -9,6 +9,9 @@ public class CameraMovement : MonoBehaviour {
 	public float ySpeed;
 	public float zoomSpeed;
 
+	public bool fix = false;
+	public GameObject fixObject;
+
 	private Transform player;
 
 	private float velocityX;
@@ -28,6 +31,8 @@ public class CameraMovement : MonoBehaviour {
 	private Vector3 vec;
 
 	private Vector3 tempPos;
+
+
 	void Start()
 	{
 		smooth = 0.01f;
@@ -66,7 +71,9 @@ public class CameraMovement : MonoBehaviour {
 	{
 		
 		if (player) {
-			tempPos = Vector3.Lerp(tempPos,player.position,smoothPos*Time.deltaTime);
+			if (fix != true ){
+				tempPos = Vector3.Lerp(tempPos,player.position,smoothPos*Time.deltaTime);
+			}
 			transform.position = tempPos + relCameraPos;
 
 			transform.RotateAround(player.position,Vector3.up,smooth*accumulatedH);
@@ -77,8 +84,12 @@ public class CameraMovement : MonoBehaviour {
 			accumulatedV*= (1.0f-smooth);
 
 			relCameraPos = transform.position - tempPos;
-			transform.LookAt(player);
-
+			if(fixObject != null && fix == true){
+				transform.LookAt(fixObject.transform);
+			}
+			else{
+				transform.LookAt(player);
+			}
 			// left button to rotate 
 			if(Input.GetMouseButton (0)){
 				// horizontal 
