@@ -378,7 +378,7 @@ public class Controller : MonoBehaviour {
 			transform.position = Vector3.Lerp(startPos, endPos, fracJourney);
 			yield return 0;
 		}
-		dead_ = true;
+		Destroy(gameObject);
 	}
 
 	public IEnumerator TeleportTo(Vector3 location)

@@ -9,7 +9,7 @@ public enum TerrainType {
 	fire,
 	ice,
 	teleport,
-	temporary
+	temporary,
 	null_exist
 }
 public class GroundTile : MonoBehaviour {
@@ -24,11 +24,11 @@ public class GroundTile : MonoBehaviour {
 
 	}
 
-	public virtual PlayerLand()
+	public virtual void PlayerLand()
 	{
 	}
 
-	public virtual PlayerHit()
+	public virtual void PlayerLeave()
 	{
 
 	}
