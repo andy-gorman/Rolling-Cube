@@ -55,7 +55,7 @@ public class CameraMovement : MonoBehaviour {
 			
 		transform.LookAt (player);
 
-		tempPos = player.position;
+//		tempPos = player.position;
 
 	}
 
