@@ -53,7 +53,7 @@ public class CameraMovement : MonoBehaviour {
 		initialMag = relCameraPosMag;
 		initialPos = transform.position;
 			
-		transform.LookAt (player);
+		//transform.LookAt (player);
 
 //		tempPos = player.position;
 
@@ -164,6 +164,16 @@ public class CameraMovement : MonoBehaviour {
 		}
 		else {
 			player = GameObject.Find ("Player").transform;
+				relCameraPos = transform.position - player.position;
+				relCameraPosMag = relCameraPos.magnitude;
+			newMag = 0;
+			
+			initialMag = relCameraPosMag;
+			initialPos = transform.position;
+			
+			//transform.LookAt (player);
+			
+					tempPos = player.position;
 		}
 	}
 }
