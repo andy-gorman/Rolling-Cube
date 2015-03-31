@@ -3,13 +3,10 @@ using System.Collections;
 
 public class TempTile : GroundTile {
 
-	private int life;
-	public int Life{
-		get {return life;}
-	}
-
+	public int life;
 	void Start () {
-		life = 3;
+		GetComponent<Renderer>().material = 
+			Resources.Load ("Crack_Face_" + life) as Material;
 	}
 
 	// Update is called once per frame
@@ -21,7 +18,7 @@ public class TempTile : GroundTile {
 	public override void PlayerLand()
 	{
 		life--;
-		if(life > 0)
+		if(life >= 0)
 		{
 			GetComponent<Renderer>().material =
 										Resources.Load("Crack_Face_" + life) as Material;
@@ -29,7 +26,7 @@ public class TempTile : GroundTile {
 	}
 	public override void PlayerLeave()
 	{
-		if(life <= 1)
+		if(life <= 0)
 		{
 			StartCoroutine(Fall());
 		}

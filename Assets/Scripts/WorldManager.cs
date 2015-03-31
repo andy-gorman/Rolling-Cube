@@ -355,7 +355,7 @@ private void HandleInput() {
 			break;
 		case TerrainType.temporary:
 			TempTile tile = GetTileAtLoc(x, y, z) as TempTile;
-			if(tile.Life <= 1) {
+			if(tile.life <= 1) {
 				ToRemove = tile;
 			}
 			break;
