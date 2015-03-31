@@ -33,9 +33,15 @@ public class Controller : MonoBehaviour {
 		get { return justTeleported_; }
 	}
 
+	private Vector3 levelPos;
+	private Quaternion levelRotation;
+
 	void Start()
 	{
 		moving = false;
+		levelPos = transform.position;
+		levelRotation = transform.rotation;
+
 	}
 
 	void Update()
@@ -378,7 +384,8 @@ public class Controller : MonoBehaviour {
 			transform.position = Vector3.Lerp(startPos, endPos, fracJourney);
 			yield return 0;
 		}
-		Destroy(gameObject);
+		transform.position = levelPos;
+		transform.rotation = levelRotation;
 	}
 
 	public IEnumerator TeleportTo(Vector3 location)
