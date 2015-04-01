@@ -440,7 +440,8 @@ private void HandleInput() {
 	private void TextureCubeFace(string dir, PlayerFaceType type)
 	{
 		if (type != PlayerFaceType.none) {
-			PlayerInst.transform.FindChild (dir).GetComponent<Renderer> ().material.mainTexture = Resources.Load ("player_" + type.ToString ()) as Texture2D;
+			//PlayerInst.transform.FindChild (dir).GetComponent<Renderer> ().material.mainTexture = Resources.Load ("player_" + type.ToString ()) as Texture2D;
+			PlayerInst.transform.FindChild(dir).GetComponent<Renderer>().material = Resources.Load ("Materials/player_" + type.ToString ()) as Material;
 		}
 	}
 }
