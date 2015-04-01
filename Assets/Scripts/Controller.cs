@@ -384,8 +384,7 @@ public class Controller : MonoBehaviour {
 			transform.position = Vector3.Lerp(startPos, endPos, fracJourney);
 			yield return 0;
 		}
-		transform.position = levelPos;
-		transform.rotation = levelRotation;
+		dead_ = true;
 	}
 
 	public IEnumerator TeleportTo(Vector3 location)
