@@ -407,6 +407,11 @@ private void HandleInput() {
 		StartUI.gameObject.SetActive(false);
 	}
 
+	public void QuitGame()
+	{
+		Application.Quit ();
+	}
+
 	/*
 	 * TODO: Make a you win screen with next level button.
 	 * Have it pop up here.
