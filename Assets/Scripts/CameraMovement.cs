@@ -123,10 +123,23 @@ public class CameraMovement : MonoBehaviour {
 
 			else if(Input.GetAxis("Mouse ScrollWheel") != 0)
 			{
-				velocityZoom = Input.GetAxis("Mouse ScrollWheel")*zoomSpeed*-1;
-				newMag = relCameraPosMag + velocityZoom;
-				relCameraPos = (transform.position - player.position)*(newMag / relCameraPosMag);
-				relCameraPosMag = newMag;
+				if(relCameraPosMag >= 5 && relCameraPosMag <= 50){
+					velocityZoom = Input.GetAxis("Mouse ScrollWheel")*zoomSpeed*-1;
+					newMag = relCameraPosMag + velocityZoom;
+					relCameraPos = (transform.position - player.position)*(newMag / relCameraPosMag);
+					relCameraPosMag = newMag;
+				}
+				else if (relCameraPosMag < 5){
+					newMag = 5;
+					relCameraPos = (transform.position - player.position)*(newMag / relCameraPosMag);
+					relCameraPosMag = 5;
+				}
+				else {
+					newMag = 50;
+					relCameraPos = (transform.position - player.position)*(newMag / relCameraPosMag);
+					relCameraPosMag = 50;
+				}
+
 			}
 
 			else if(Input.GetMouseButtonDown(1))
