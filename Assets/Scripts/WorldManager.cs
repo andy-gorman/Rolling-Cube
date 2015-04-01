@@ -329,21 +329,25 @@ private void HandleInput() {
 				case Direction.negX:
 					if(GetTileTerrAtLoc(x - 1, y, z) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlideNegX();
+						GetTileAtLoc (x - 1, y-1, z).PlayerLand();
 					}
 					break;
 				case Direction.posX:
 					if(GetTileTerrAtLoc(x + 1, y, z) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlidePosX();
+						GetTileAtLoc(x + 1, y-1, z).PlayerLand();
 					}
 					break;
 				case Direction.negZ:
 					if(GetTileTerrAtLoc(x, y, z - 1) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlideNegZ();
+						GetTileAtLoc (x, y-1, z - 1).PlayerLand();
 					}
 					break;
 				case Direction.posZ:
 					if(GetTileTerrAtLoc(x, y, z + 1) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlidePosZ();
+						GetTileAtLoc(x, y-1, z + 1).PlayerLand();
 					}
 					break;
 				}
