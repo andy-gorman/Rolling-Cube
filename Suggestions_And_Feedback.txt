@@ -1,0 +1,7 @@
+* Sound associated with faces
+* Cube faces as UPS stickers - Pick 'em up
+* Color Scheme for Teleports
+* Fix the colors on the teleports/Color Scheme
+* Symbols on teleport? Don't show white, its jarring
+* Maybe replace start and end tiles
+* End of level...show opened package based on how many moves the player took.
