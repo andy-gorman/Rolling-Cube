@@ -390,7 +390,6 @@ public class Controller : MonoBehaviour {
 	public IEnumerator TeleportTo(Vector3 location)
 	{
 		moving = true;
-		Color origColor = GetComponentsInChildren<MeshRenderer> ()[0].material.color;
 		float time = 0f;
 		Vector3 full = transform.localScale;
 		Vector3 shrunk = new Vector3(0.0f, 0.0f, 0.0f);
