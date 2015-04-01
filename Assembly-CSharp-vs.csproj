@@ -57,7 +57,7 @@
      <Compile Include="Assets\Scripts\TempTile.cs" />
      <Compile Include="Assets\Scripts\WorldManager.cs" />
  <Reference Include="Assembly-UnityScript-firstpass">
- <HintPath>/Users/andrew/Development/WUSTL_CS_classes/Video_Game_Programming/Unity Work/Rolling-Cube/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
+ <HintPath>D:/Programming/_project/Rolling_cube_clone/Rolling-Cube/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Programming/UNITY/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
