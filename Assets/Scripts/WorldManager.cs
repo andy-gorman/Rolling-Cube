@@ -71,7 +71,12 @@ public class WorldManager : MonoBehaviour
 		TextureCubeFaces ();
 
 		//open start UI panel
-		StartLevel();
+		Debug.Log ("Replay: " + PlayerPrefs.GetInt("Replay"));
+		if (PlayerPrefs.GetInt ("Replay") == 0) {
+			StartLevel ();
+		} else {
+			StartButton ();
+		}
 
 		//Allow World to Respond to input.
 		//IsPlaying = true;
@@ -110,6 +115,7 @@ public class WorldManager : MonoBehaviour
 
 	public void LoadNextLevel()
 	{
+		PlayerPrefs.DeleteKey ("Replay");
 		Application.LoadLevel(NextSceneName);
 	}
 
@@ -355,7 +361,7 @@ private void HandleInput() {
 			break;
 		case TerrainType.temporary:
 			TempTile tile = GetTileAtLoc(x, y, z) as TempTile;
-			if(tile.life <= 1) {
+			if(tile.life <= 0) {
 				ToRemove = tile;
 			}
 			break;
@@ -375,10 +381,8 @@ private void HandleInput() {
 	}
 
 	private void ResetPlayer() {
-		IsPlaying = false;
-		GameObject.Destroy(PlayerInst);
-		Start ();
-
+		PlayerPrefs.SetInt ("Replay", 1);
+		Application.LoadLevel (Application.loadedLevel);
 	}
 
 	/*
