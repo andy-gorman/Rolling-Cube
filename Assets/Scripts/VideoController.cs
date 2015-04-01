@@ -6,6 +6,7 @@ public class VideoController : MonoBehaviour {
 	public MovieTexture myMovie;
 
 	void Start () {
+		PlayerPrefs.DeleteAll ();
 		myMovie.Play ();
 	}
 
