@@ -275,7 +275,14 @@ private void HandleInput() {
 			&& tile.transform.position.z == z
 			&& tile.transform.position.y == (y + 1.0f))) {
 	//		Debug.Log ("find upper");
-			return 1;
+			if( !System.Array.Exists( tiles,
+														tile => tile.transform.position.x == x
+														&& tile.transform.position.z == z
+														&& tile.transform.position.y == (y + 2.0f))) {
+				return 1;
+			} else {
+				return 9;
+			}
 		} else if (System.Array.Exists (tiles,
 		                              tile => tile.transform.position.x == x
 			&& tile.transform.position.z == z
