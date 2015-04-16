@@ -12,9 +12,11 @@ public enum TerrainType {
 	temporary,
 	null_exist
 }
+
 public class GroundTile : MonoBehaviour {
 
 	public TerrainType TerrType;
+	public AudioSource landSound;
 	// Use this for initialization
 	void Start () {
 	}
@@ -26,6 +28,7 @@ public class GroundTile : MonoBehaviour {
 
 	public virtual void PlayerLand()
 	{
+		landSound.Play ();
 	}
 
 	public virtual void PlayerLeave()

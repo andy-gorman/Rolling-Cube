@@ -9,6 +9,7 @@ public class Controller : MonoBehaviour {
 	public float slideSpeed;
 	public float sinkSpeed;
 	public float fallSpeed;
+	
 
 
 	private bool moving;
