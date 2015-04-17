@@ -28,6 +28,8 @@ public class WorldManager : MonoBehaviour
 	public Canvas WinUI;
 	public string NextSceneName;
 
+	public GameObject indicator;
+
 
 	//This is the instance of the player that is created from PlayerPrefab.
 	private GameObject PlayerInst;
@@ -57,6 +59,16 @@ public class WorldManager : MonoBehaviour
 		            								startZ),
 		                                            PlayerPrefab.transform.rotation);
 		PlayerInst.name = "Player";
+
+		//the direction indicator
+		indicator = GameObject.FindGameObjectWithTag ("indicator");
+		Vector3 indicatorTemp;
+
+		indicatorTemp.x = PlayerInst.transform.position.x;
+		indicatorTemp.y = PlayerInst.transform.position.y + 1;
+		indicatorTemp.z = PlayerInst.transform.position.z;
+
+		indicator.transform.position = indicatorTemp;
 
 		//Set the faces of the model.
 		PlayerCube model = PlayerInst.GetComponent<PlayerCube> ();
@@ -95,6 +107,26 @@ public class WorldManager : MonoBehaviour
 	void Update()
 	{
 		direction = CM.direction;
+
+		//update the indicator position and angle
+		Vector3 indicatorTemp;
+		
+		indicatorTemp.x = PlayerInst.transform.position.x;
+		indicatorTemp.y = PlayerInst.transform.position.y + 1;
+		indicatorTemp.z = PlayerInst.transform.position.z;
+		
+		indicator.transform.position = indicatorTemp;
+
+		if (direction == 1) {
+			indicator.transform.eulerAngles = new Vector3 (0, 180, 0);
+		} else if (direction == 2) {
+			indicator.transform.eulerAngles = new Vector3 (0, 270, 0);
+		} else if (direction == 3) {
+			indicator.transform.eulerAngles = new Vector3 (0, 0, 0);
+		} else if (direction == 4) {
+			indicator.transform.eulerAngles = new Vector3 (0, 90, 0);
+		}
+
 		//Ignore Input until GameState is set to playing.
 		if (IsPlaying) {
 			if(!PlayerInst.GetComponent<Controller>().Moving) {
