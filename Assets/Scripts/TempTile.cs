@@ -29,20 +29,12 @@ public class TempTile : GroundTile {
 		if(life <= 0)
 		{
 			StartCoroutine(Fall());
+			GetComponent<Rigidbody>().useGravity = true;
 		}
 	}
 	IEnumerator Fall()
 	{
-		float distance = 10f;
-		Vector3 startPos = transform.position;
-		Vector3 endPos = transform.position; endPos.y -= distance;
-		float startTime = Time.time;
-		while (transform.position != endPos) {
-			float distCovered = (Time.time - startTime) * 3f;
-			float fracJourney = distCovered / distance;
-			transform.position = Vector3.Lerp(startPos, endPos, fracJourney);
-			yield return 0;
-		}
+		yield return new WaitForSeconds (5);
 		Destroy(gameObject);
 	}
 }
