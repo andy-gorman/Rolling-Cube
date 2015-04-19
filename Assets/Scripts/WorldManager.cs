@@ -31,6 +31,8 @@ public class WorldManager : MonoBehaviour
 	
 	public GameObject indicator;
 
+	public Canvas LevelCanvas;
+
 
 	//This is the instance of the player that is created from PlayerPrefab.
 	private GameObject PlayerInst;
@@ -452,6 +454,14 @@ private void HandleInput() {
 		IsPlaying = true;
 		StartUI.gameObject.SetActive(false);
 	}
+
+	/*
+	 * Onclick reset button
+	 */
+	public void ResetButton() {
+		ResetPlayer ();
+	}
+
 
 	public void QuitGame()
 	{
