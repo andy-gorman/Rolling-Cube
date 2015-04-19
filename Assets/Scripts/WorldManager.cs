@@ -33,6 +33,7 @@ public class WorldManager : MonoBehaviour
 	public GameObject indicator;
 
 	public Canvas LevelCanvas;
+	public Text moveCount;
 
 
 	//This is the instance of the player that is created from PlayerPrefab.
@@ -145,6 +146,7 @@ public class WorldManager : MonoBehaviour
 				ResetPlayer ();
 			}
 		}
+		moveCount.text = "Moves: " + PlayerInst.GetComponent<Controller> ().moveCounter;
 	}
 
 	void updateDirection(int dir){

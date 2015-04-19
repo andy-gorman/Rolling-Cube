@@ -10,7 +10,8 @@ public class Controller : MonoBehaviour {
 	public float sinkSpeed;
 	public float fallSpeed;
 	
-
+	//move counter
+	public int moveCounter;
 
 	private bool moving;
 	public bool Moving
@@ -66,6 +67,11 @@ public class Controller : MonoBehaviour {
 		if (FaceType == PlayerFaceType.spikes) {
 			transform.FindChild(Face).GetComponent<MeshFilter>().mesh = SpikeMesh;
 		}
+	}
+
+	private void updateMoveCount() {
+		moveCounter++;
+		//Debug.Log (moveCounter);
 	}
 
 	//BEGIN ROLLING METHODS
@@ -234,6 +240,8 @@ public class Controller : MonoBehaviour {
 
 		transform.position = pos;
 		moving = false;
+
+		updateMoveCount ();
 	}
 
 	IEnumerator Roll(float fwdWeight, float upWeight, float xWeight, Vector3 rotateAxis, string dir) {
@@ -268,6 +276,8 @@ public class Controller : MonoBehaviour {
 		pos.y = 0.5f; //Maybe change this eventually but its probably fine.
 		transform.position = pos;
 		moving = false;
+
+		updateMoveCount ();
 	}
 
 	//END ROLLING METHODS
