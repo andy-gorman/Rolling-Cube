@@ -23,6 +23,7 @@ public class WorldManager : MonoBehaviour
 	public PlayerFaceType top, bottom, posX, negX, posZ, negZ;
 
 	public Canvas StartUI;
+	public Canvas BlackScreen;
 	private bool firstime = true;
 
 	public Canvas WinUI;
@@ -418,7 +419,7 @@ private void HandleInput() {
 			}
 			break;
 		case TerrainType.finish:
-			Debug.Log ("blah");
+			IsPlaying = false;
 			StartCoroutine(WinLevel());
 			break;
 		}
@@ -464,13 +465,9 @@ private void HandleInput() {
 	private IEnumerator WinLevel()
 	{
 		AudioSource audio = GetComponent < AudioSource >();
-		IsPlaying = false;
 		yield return new WaitForSeconds (0.5f);
 		audio.Play ();
 		yield return 0;
-		/*CM.gameObject.GetComponent<AudioSource> ().clip = Resources.Load ("doorbell") as AudioClip;
-		yield return Waitfo*/
-		//WinUI.gameObject.SetActive(true);
 	}
 
 	private void TextureCubeFaces()
