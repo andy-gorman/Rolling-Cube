@@ -27,8 +27,8 @@ public class WorldManager : MonoBehaviour
 
 	public Canvas WinUI;
 	public string NextSceneName;
-
-	public GameObject door;
+	
+	public GameObject indicator;
 
 
 	//This is the instance of the player that is created from PlayerPrefab.
@@ -59,6 +59,16 @@ public class WorldManager : MonoBehaviour
 		            								startZ),
 		                                            PlayerPrefab.transform.rotation);
 		PlayerInst.name = "Player";
+
+		//the direction indicator
+		indicator = GameObject.FindGameObjectWithTag ("indicator");
+		Vector3 indicatorTemp;
+
+		indicatorTemp.x = PlayerInst.transform.position.x;
+		indicatorTemp.y = PlayerInst.transform.position.y + 1;
+		indicatorTemp.z = PlayerInst.transform.position.z;
+
+		indicator.transform.position = indicatorTemp;
 
 		//Set the faces of the model.
 		PlayerCube model = PlayerInst.GetComponent<PlayerCube> ();
@@ -97,6 +107,26 @@ public class WorldManager : MonoBehaviour
 	void Update()
 	{
 		direction = CM.direction;
+
+		//update the indicator position and angle
+		Vector3 indicatorTemp;
+		
+		indicatorTemp.x = PlayerInst.transform.position.x;
+		indicatorTemp.y = PlayerInst.transform.position.y + 1;
+		indicatorTemp.z = PlayerInst.transform.position.z;
+		
+		indicator.transform.position = indicatorTemp;
+
+		if (direction == 1) {
+			indicator.transform.eulerAngles = new Vector3 (0, 180, 0);
+		} else if (direction == 2) {
+			indicator.transform.eulerAngles = new Vector3 (0, 270, 0);
+		} else if (direction == 3) {
+			indicator.transform.eulerAngles = new Vector3 (0, 0, 0);
+		} else if (direction == 4) {
+			indicator.transform.eulerAngles = new Vector3 (0, 90, 0);
+		}
+
 		//Ignore Input until GameState is set to playing.
 		if (IsPlaying) {
 			if(!PlayerInst.GetComponent<Controller>().Moving) {
@@ -436,9 +466,6 @@ private void HandleInput() {
 		AudioSource audio = GetComponent < AudioSource >();
 		IsPlaying = false;
 		yield return new WaitForSeconds (0.5f);
-		audio.Play ();
-		yield return new WaitForSeconds (audio.clip.length);
-		audio.clip = Resources.Load ("footsteps") as AudioClip;
 		audio.Play ();
 		yield return 0;
 		/*CM.gameObject.GetComponent<AudioSource> ().clip = Resources.Load ("doorbell") as AudioClip;
