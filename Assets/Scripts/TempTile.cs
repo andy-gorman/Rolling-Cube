@@ -23,6 +23,7 @@ public class TempTile : GroundTile {
 			GetComponent<Renderer>().material =
 										Resources.Load("Crack_Face_" + life) as Material;
 		}
+		base.PlayerLand ();
 	}
 	public override void PlayerLeave()
 	{
@@ -30,6 +31,7 @@ public class TempTile : GroundTile {
 		{
 			StartCoroutine(Fall());
 		}
+
 	}
 	IEnumerator Fall()
 	{
