@@ -22,8 +22,7 @@ public class WorldManager : MonoBehaviour
 	public GameObject TextPrefab;
 	//These hold the players face types. Settablex in editor.
 	public PlayerFaceType top, bottom, posX, negX, posZ, negZ;
-
-	public Canvas StartUI;
+	
 	public Image BlackScreen;
 	private bool firstime = true;
 
@@ -66,12 +65,6 @@ public class WorldManager : MonoBehaviour
 			Button tmp =  LevelCanvas.GetComponentInChildren<Button>();
 			tmp.onClick.AddListener(() =>{ResetPlayer ();});
 			LevelCanvas.gameObject.SetActive(false);
-		}
-		if (StartUI == null) {
-			StartUI = GameObject.Find ("Level_Start_Canvas").GetComponent<Canvas> ();
-			//StartUI.gameObject.SetActive(false);
-		} else {
-			StartUI.gameObject.SetActive(true);
 		}
 
 		if (GameObject.Find ("Background_Music") == null) {
@@ -124,11 +117,10 @@ public class WorldManager : MonoBehaviour
 
 		//open start UI panel
 		Debug.Log ("Replay: " + PlayerPrefs.GetInt("Replay"));
-		if (PlayerPrefs.GetInt ("Replay") == 0) {
-			StartLevel ();
-		} else {
-			StartButton ();
-		}
+		//if (PlayerPrefs.GetInt ("Replay") == 0) {
+		//		StartLevel ();
+		//}
+		StartLevel ();
 
 		//Allow World to Respond to input.
 		//IsPlaying = true;
@@ -470,23 +462,15 @@ public class WorldManager : MonoBehaviour
 	 */
 	private void StartLevel()
 	{
-		if (firstime == true) {
+		IsPlaying = true;
+		/*&if (firstime == true) {
 			StartUI.gameObject.SetActive (true);
 			firstime = false;
 		} else {
 			IsPlaying = true;
-		}
+		}*/
 	}
-
-	/*
-	 * Onclick Start Button
-	 */
-	public void StartButton()
-	{
-		IsPlaying = true;
-		StartUI.gameObject.SetActive(false);
-		LevelCanvas.gameObject.SetActive (true);
-	}
+	
 
 	public void QuitGame()
 	{
@@ -500,6 +484,7 @@ public class WorldManager : MonoBehaviour
 
 	private IEnumerator WinLevel()
 	{
+		LevelCanvas.gameObject.SetActive (false);
 		//Play the level ending sound.s
 		AudioSource audio = GetComponent < AudioSource > ();
 		if (audio != null) {
