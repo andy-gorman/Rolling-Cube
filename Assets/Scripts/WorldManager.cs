@@ -19,7 +19,7 @@ public class WorldManager : MonoBehaviour
 	private CameraMovement CM;
 
 	public GameObject PlayerPrefab;
-	//These hold the players face types. Settable in editor.
+	//These hold the players face types. Settablex in editor.
 	public PlayerFaceType top, bottom, posX, negX, posZ, negZ;
 
 	public Canvas StartUI;
@@ -27,6 +27,8 @@ public class WorldManager : MonoBehaviour
 
 	public Canvas WinUI;
 	public string NextSceneName;
+
+	public GameObject door;
 
 
 	//This is the instance of the player that is created from PlayerPrefab.
@@ -386,7 +388,8 @@ private void HandleInput() {
 			}
 			break;
 		case TerrainType.finish:
-			WinLevel();
+			Debug.Log ("blah");
+			StartCoroutine(WinLevel());
 			break;
 		}
 	}
@@ -428,9 +431,19 @@ private void HandleInput() {
 	 * Have it pop up here.
 	 */
 
-	private void WinLevel()
+	private IEnumerator WinLevel()
 	{
-		WinUI.gameObject.SetActive(true);
+		AudioSource audio = GetComponent < AudioSource >();
+		IsPlaying = false;
+		yield return new WaitForSeconds (0.5f);
+		audio.Play ();
+		yield return new WaitForSeconds (audio.clip.length);
+		audio.clip = Resources.Load ("footsteps") as AudioClip;
+		audio.Play ();
+		yield return 0;
+		/*CM.gameObject.GetComponent<AudioSource> ().clip = Resources.Load ("doorbell") as AudioClip;
+		yield return Waitfo*/
+		//WinUI.gameObject.SetActive(true);
 	}
 
 	private void TextureCubeFaces()
