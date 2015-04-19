@@ -103,6 +103,7 @@ public class WorldManager : MonoBehaviour
 		//resetCamera
 		CM.resetCamera ();
 
+
 		//Set the
 		ToRemove = null;
 	}
