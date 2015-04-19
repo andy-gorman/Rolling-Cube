@@ -19,11 +19,12 @@ public class WorldManager : MonoBehaviour
 	private CameraMovement CM;
 
 	public GameObject PlayerPrefab;
+	public GameObject TextPrefab;
 	//These hold the players face types. Settablex in editor.
 	public PlayerFaceType top, bottom, posX, negX, posZ, negZ;
 
 	public Canvas StartUI;
-	public Canvas BlackScreen;
+	public Image BlackScreen;
 	private bool firstime = true;
 
 	public Canvas WinUI;
@@ -34,6 +35,7 @@ public class WorldManager : MonoBehaviour
 
 	//This is the instance of the player that is created from PlayerPrefab.
 	private GameObject PlayerInst;
+	private GameObject endText;
 	private bool IsPlaying;
 	public bool CurPlaying{
 		get { return IsPlaying;}
@@ -467,7 +469,26 @@ private void HandleInput() {
 		AudioSource audio = GetComponent < AudioSource >();
 		yield return new WaitForSeconds (0.5f);
 		audio.Play ();
+
+		float t = 0f;
+		while (BlackScreen.color.a < 1f) { 
+			t+= Time.deltaTime * 0.1f;
+			BlackScreen.color = Color.Lerp (BlackScreen.color, Color.black, t);
+			yield return 0;
+		}
+		BlackScreen.color = Color.black;
+		while (audio.isPlaying) {
+			yield return 0;
+		}
+		endText = Instantiate (TextPrefab);
+		endText.transform.SetParent(BlackScreen.transform);
+		RectTransform rect = endText.GetComponent<RectTransform>();
+		
+		rect.anchoredPosition = new Vector2 (0, 0);
+		rect.offsetMax = new Vector2 (0, 0);
+		rect.offsetMin = new Vector2 (0, 0);
 		yield return 0;
+
 	}
 
 	private void TextureCubeFaces()
