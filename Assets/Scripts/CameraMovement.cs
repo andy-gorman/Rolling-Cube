@@ -67,6 +67,10 @@ public class CameraMovement : MonoBehaviour {
 
 	void FixedUpdate ()
 	{
+
+		if (Input.GetKeyDown(KeyCode.JoystickButton12)) {
+			Debug.Log ("dddd");
+		}
 		
 		if (player) {
 			if (fix != true ){

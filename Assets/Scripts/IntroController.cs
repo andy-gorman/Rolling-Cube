@@ -28,7 +28,7 @@ public class IntroController : MonoBehaviour {
 			}
 		}
 		if (Input.GetKeyDown (KeyCode.Return)) {
-			Application.LoadLevel ("Level_1");
+//			Application.LoadLevel ("Level_1");
 		}
 	}
 

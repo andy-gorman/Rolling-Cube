@@ -1,0 +1,155 @@
+fileFormatVersion: 2
+guid: 503716b5b72724e299e0a606c11bde02
+timeCreated: 1429113621
+licenseType: Free
+ModelImporter:
+  serializedVersion: 18
+  fileIDToRecycleName:
+    100000: box
+    100002: box_2
+    100004: Camera
+    100006: Cover1
+    100008: Cover2
+    100010: Disc
+    100012: Light
+    100014: Light_1
+    100016: Package
+    100018: //RootNode
+    100020: Sphere
+    400000: box
+    400002: box_2
+    400004: Camera
+    400006: Cover1
+    400008: Cover2
+    400010: Disc
+    400012: Light
+    400014: Light_1
+    400016: Package
+    400018: //RootNode
+    400020: Sphere
+    2300000: box
+    2300002: box_2
+    2300004: Cover1
+    2300006: Cover2
+    2300008: Disc
+    2300010: Sphere
+    3300000: box
+    3300002: box_2
+    3300004: Cover1
+    3300006: Cover2
+    3300008: Disc
+    3300010: Sphere
+    4300000: Disc
+    4300002: Sphere
+    4300004: box
+    4300006: box_2
+    4300008: Cover1
+    4300010: Cover2
+    7400000: C4D Animation Take
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationCompression: 1
+    animationRotationError: .5
+    animationPositionError: .5
+    animationScaleError: .5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: C4D Animation Take
+      takeName: C4D Animation Take
+      firstFrame: 0
+      lastFrame: 90
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: box
+        weight: 1
+      - path: Camera
+        weight: 1
+      - path: Disc
+        weight: 1
+      - path: Light
+        weight: 1
+      - path: Light_1
+        weight: 1
+      - path: Package
+        weight: 1
+      - path: Package/box_2
+        weight: 1
+      - path: Package/Cover1
+        weight: 1
+      - path: Package/Cover2
+        weight: 1
+      - path: Sphere
+        weight: 1
+      maskType: 0
+      maskSource: {instanceID: 0}
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    splitTangentsAcrossUV: 1
+    normalImportMode: 0
+    tangentImportMode: 1
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: .5
+    foreArmTwist: .5
+    upperLegTwist: .5
+    legTwist: .5
+    armStretch: .0500000007
+    legStretch: .0500000007
+    feetSpacing: 0
+    rootMotionBoneName: 
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
