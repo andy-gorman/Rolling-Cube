@@ -360,6 +360,7 @@ public class WorldManager : MonoBehaviour
 			return -1;
 		} else {
 			//means no block adjacent
+			Debug.Log ("no adjacent");
 			return 9;
 		}
 	}
