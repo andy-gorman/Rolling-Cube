@@ -36,6 +36,9 @@ public class TextBox : MonoBehaviour {
 			}
 			if (msgIndex >= messages.Length) {
 				done = true;
+				if(GameObject.Find ("WorldManager") == null) {
+					Application.LoadLevel ("Level_1");
+				}
 			}
 		}
 	}
