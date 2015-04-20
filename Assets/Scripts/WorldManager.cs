@@ -65,10 +65,16 @@ public class WorldManager : MonoBehaviour
 			moveCount = GameObject.Find ("scoreText").GetComponent<Text>();
 			Button reset =  GameObject.Find ("Reset").GetComponent<Button>();
 			Button toggle = GameObject.Find ("Toggle_Indicator").GetComponent<Button>();
+<<<<<<< HEAD
 			Button menu = GameObject.Find ("HomeBtn").GetComponent<Button>();
 			reset.onClick.AddListener(() =>{ResetPlayer ();});
 			toggle.onClick.AddListener(() => {ToggleIndicator();});
 			menu.onClick.AddListener(() => {BackHome();});
+=======
+			Button menu = GameObject.Find ("Homebtn").GetComponent<Button>();
+			reset.onClick.AddListener(() =>{ResetPlayer ();});
+			toggle.onClick.AddListener(() => {ToggleIndicator();});
+>>>>>>> a278c1452c9b210ab3447d79754e65574da96052
 			LevelCanvas.gameObject.SetActive(true);
 		}
 		
@@ -341,17 +347,29 @@ public class WorldManager : MonoBehaviour
 		                         && tile.transform.position.z == z
 		                         && tile.transform.position.y == (y + 1.0f))) {
 			if (!System.Array.Exists (tiles,
+<<<<<<< HEAD
 			                          tile => Mathf.Approximately(tile.transform.position.x, x)
 			                          && Mathf.Approximately(tile.transform.position.z, z)
 			                          && Mathf.Approximately(tile.transform.position.y, (y + 2.0f)))) {
+=======
+														tile => Mathf.Approximately(tile.transform.position.x, x)
+				&& Mathf.Approximately(tile.transform.position.z, z)
+				&& Mathf.Approximately(tile.transform.position.y, (y + 2.0f)))) {
+>>>>>>> a278c1452c9b210ab3447d79754e65574da96052
 				return 1;
 			} else {
 				return 9;
 			}
 		} else if (System.Array.Exists (tiles,
+<<<<<<< HEAD
 		                                tile => Mathf.Approximately(tile.transform.position.x, x)
 		                                && Mathf.Approximately(tile.transform.position.z,z)
 		                                && Mathf.Approximately(tile.transform.position.y, y))) {
+=======
+		                              tile => Mathf.Approximately(tile.transform.position.x, x)
+			&& Mathf.Approximately(tile.transform.position.z,z)
+			&& Mathf.Approximately(tile.transform.position.y, y))) {
+>>>>>>> a278c1452c9b210ab3447d79754e65574da96052
 			//		Debug.Log ("find parallel");
 			return 0;
 		} else if (Physics.Raycast (new Vector3(x, y, z), Vector3.down * 100, out hit)) {
