@@ -63,8 +63,10 @@ public class WorldManager : MonoBehaviour
 		if (LevelCanvas == null) {
 			LevelCanvas = (Instantiate (Resources.Load ("Level_Canvas")) as GameObject).GetComponent<Canvas>();
 			moveCount = GameObject.Find ("scoreText").GetComponent<Text>();
-			Button tmp =  LevelCanvas.GetComponentInChildren<Button>();
-			tmp.onClick.AddListener(() =>{ResetPlayer ();});
+			Button reset =  GameObject.Find ("Reset").GetComponent<Button>();
+			Button toggle = GameObject.Find ("Toggle_Indicator").GetComponent<Button>();
+			reset.onClick.AddListener(() =>{ResetPlayer ();});
+			toggle.onClick.AddListener(() => {ToggleIndicator();});
 			LevelCanvas.gameObject.SetActive(true);
 		}
 
@@ -487,6 +489,7 @@ public class WorldManager : MonoBehaviour
 
 	public void ToggleIndicator()
 	{
+		Debug.Log ("Toggle");
 		foreach (MeshRenderer mr in indicator.GetComponentsInChildren<MeshRenderer> ()) {
 			mr.enabled = !mr.enabled;
 		}
