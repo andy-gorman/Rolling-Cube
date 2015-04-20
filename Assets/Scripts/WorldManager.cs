@@ -64,9 +64,11 @@ public class WorldManager : MonoBehaviour
 			LevelCanvas = (Instantiate (Resources.Load ("Level_Canvas")) as GameObject).GetComponent<Canvas>();
 			moveCount = GameObject.Find ("scoreText").GetComponent<Text>();
 			Button reset =  GameObject.Find ("Reset").GetComponent<Button>();
-			Button toggle = GameObject.Find ("Toggle_Indicator").GetComponent<Button>();;
+			Button toggle = GameObject.Find ("Toggle_Indicator").GetComponent<Button>();
+			Button menu = GameObject.Find ("HomeBtn").GetComponent<Button>();
 			reset.onClick.AddListener(() =>{ResetPlayer ();});
 			toggle.onClick.AddListener(() => {ToggleIndicator();});
+			menu.onClick.AddListener(() => {ReturnHome();});
 			LevelCanvas.gameObject.SetActive(true);
 		}
 		
@@ -477,6 +479,11 @@ public class WorldManager : MonoBehaviour
 		} else {
 			IsPlaying = true;
 		}*/
+	}
+	
+	public void ReturnHome()
+	{
+		Application.LoadLevel ("Intro_Scene");
 	}
 	
 	
