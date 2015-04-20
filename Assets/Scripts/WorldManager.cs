@@ -58,7 +58,7 @@ public class WorldManager : MonoBehaviour
 		if (BlackScreen == null) {
 			BlackScreen = Instantiate ( Resources.Load ("Black_Screen") as GameObject).GetComponentInChildren<Image>();
 		}
-
+		BlackScreen.gameObject.SetActive (false);
 		if (LevelCanvas == null) {
 			LevelCanvas = (Instantiate (Resources.Load ("Level_Canvas")) as GameObject).GetComponent<Canvas>();
 			moveCount = GameObject.Find ("scoreText").GetComponent<Text>();
@@ -330,15 +330,15 @@ public class WorldManager : MonoBehaviour
 	//Essentially Checks if there is a block in the given x, z location.
 	private int CanMove(float x, float y, float z)
 	{
+		RaycastHit hit;
 		if (System.Array.Exists (tiles,
 		                        tile => tile.transform.position.x == x
 			&& tile.transform.position.z == z
 			&& tile.transform.position.y == (y + 1.0f))) {
-	//		Debug.Log ("find upper");
-			if( !System.Array.Exists( tiles,
+			if (!System.Array.Exists (tiles,
 														tile => tile.transform.position.x == x
-														&& tile.transform.position.z == z
-														&& tile.transform.position.y == (y + 2.0f))) {
+				&& tile.transform.position.z == z
+				&& tile.transform.position.y == (y + 2.0f))) {
 				return 1;
 			} else {
 				return 9;
@@ -347,7 +347,9 @@ public class WorldManager : MonoBehaviour
 		                              tile => tile.transform.position.x == x
 			&& tile.transform.position.z == z
 			&& tile.transform.position.y == y)) {
-	//		Debug.Log ("find parallel");
+			//		Debug.Log ("find parallel");
+			return 0;
+		} else if (Physics.Raycast (new Vector3(x, y, z), Vector3.down * 100, out hit)) {
 			return 0;
 		} else if (System.Array.Exists (tiles,
 		                              tile => tile.transform.position.x == x
@@ -452,7 +454,7 @@ public class WorldManager : MonoBehaviour
 		}
 	}
 
-	private void ResetPlayer() {
+	public void ResetPlayer() {
 		PlayerPrefs.SetInt ("Replay", 1);
 		Application.LoadLevel (Application.loadedLevel);
 	}
@@ -477,13 +479,17 @@ public class WorldManager : MonoBehaviour
 		Application.Quit ();
 	}
 
-	/*
-	 * TODO: Make a you win screen with next level button.
-	 * Have it pop up here.
-	 */
+	public void ToggleIndicator()
+	{
+		foreach (MeshRenderer mr in indicator.GetComponentsInChildren<MeshRenderer> ()) {
+			mr.enabled = !mr.enabled;
+		}
+	}
+
 
 	private IEnumerator WinLevel()
 	{
+		BlackScreen.gameObject.SetActive (true);
 		LevelCanvas.gameObject.SetActive (false);
 		//Play the level ending sound.s
 		AudioSource audio = GetComponent < AudioSource > ();
