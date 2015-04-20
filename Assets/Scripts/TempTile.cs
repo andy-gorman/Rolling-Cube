@@ -23,6 +23,7 @@ public class TempTile : GroundTile {
 			GetComponent<Renderer>().material =
 										Resources.Load("Crack_Face_" + life) as Material;
 		}
+		base.PlayerLand ();
 	}
 	public override void PlayerLeave()
 	{
@@ -30,20 +31,21 @@ public class TempTile : GroundTile {
 		{
 			StartCoroutine(Fall());
 		}
+
 	}
 	IEnumerator Fall()
 	{
-		float distance = 10f;
+		float distance = 30f;
 		Vector3 startPos = transform.position;
 		Vector3 endPos = transform.position; endPos.y -= distance;
 		float startTime = Time.time;
 		while (transform.position != endPos) {
-			float distCovered = (Time.time - startTime) * 3f;
+			float distCovered = (Time.time - startTime) * 10f;
 			float fracJourney = distCovered / distance;
 			transform.position = Vector3.Lerp(startPos, endPos, fracJourney);
 			yield return 0;
 		}
-		Destroy(gameObject);
+		GetComponent<MeshRenderer> ().enabled = false;
 	}
 }
 

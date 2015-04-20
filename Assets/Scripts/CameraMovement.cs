@@ -157,9 +157,11 @@ public class CameraMovement : MonoBehaviour {
 			}
 
 			//position calculationg
-			float xjudge = transform.position.x - player.position.x;
-			float zjudge = transform.position.z - player.position.z;
-			
+			//float xjudge = transform.position.x - player.position.x;
+			//float zjudge = transform.position.z - player.position.z;
+			float xjudge = transform.position.x - tempPos.x;
+			float zjudge = transform.position.z - tempPos.z;
+
 			
 			float judge1 = zjudge - xjudge;
 			float judge2 = zjudge + xjudge;

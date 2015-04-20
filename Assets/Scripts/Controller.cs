@@ -9,7 +9,9 @@ public class Controller : MonoBehaviour {
 	public float slideSpeed;
 	public float sinkSpeed;
 	public float fallSpeed;
-
+	
+	//move counter
+	public int moveCounter;
 
 	private bool moving;
 	public bool Moving
@@ -65,6 +67,11 @@ public class Controller : MonoBehaviour {
 		if (FaceType == PlayerFaceType.spikes) {
 			transform.FindChild(Face).GetComponent<MeshFilter>().mesh = SpikeMesh;
 		}
+	}
+
+	private void updateMoveCount() {
+		moveCounter++;
+		//Debug.Log (moveCounter);
 	}
 
 	//BEGIN ROLLING METHODS
@@ -233,6 +240,8 @@ public class Controller : MonoBehaviour {
 
 		transform.position = pos;
 		moving = false;
+
+		updateMoveCount ();
 	}
 
 	IEnumerator Roll(float fwdWeight, float upWeight, float xWeight, Vector3 rotateAxis, string dir) {
@@ -267,6 +276,8 @@ public class Controller : MonoBehaviour {
 		pos.y = 0.5f; //Maybe change this eventually but its probably fine.
 		transform.position = pos;
 		moving = false;
+
+		updateMoveCount ();
 	}
 
 	//END ROLLING METHODS
@@ -276,32 +287,36 @@ public class Controller : MonoBehaviour {
 	public void SlidePosZ()
 	{
 		Vector3 pos = transform.position;
-		StartCoroutine(Slide(pos.x, pos.z + 1f));
+		//StartCoroutine(Slide(pos.x, pos.z + 1f));
+		Slide (pos.x, pos.z + 1f);
 		lastMove_ = Direction.posZ;
 	}
 
 	public void SlideNegZ()
 	{
 		Vector3 pos = transform.position;
-		StartCoroutine(Slide(pos.x, pos.z - 1f));
+		//StartCoroutine(Slide(pos.x, pos.z - 1f));
+		Slide (pos.x, pos.z - 1f);
 		lastMove_ = Direction.negZ;
 	}
 
 	public void SlidePosX()
 	{
 		Vector3 pos = transform.position;
-		StartCoroutine(Slide(pos.x + 1f, pos.z));
+		//StartCoroutine(Slide(pos.x + 1f, pos.z));
+		Slide (pos.x + 1f, pos.z);
 		lastMove_ = Direction.posX;
 	}
 
 	public void SlideNegX()
 	{
 		Vector3 pos = transform.position;
-		StartCoroutine(Slide(pos.x - 1f, pos.z));
+		//StartCoroutine(Slide(pos.x - 1f, pos.z));
+		Slide (pos.x - 1f, pos.z);
 		lastMove_ = Direction.negX;
 	}
 
-	IEnumerator Slide(float endX, float endZ)
+	 void Slide(float endX, float endZ)
 	{
 		float curX = transform.position.x; float curZ = transform.position.z;
 		float distToCover = Mathf.Sqrt((endX - curX) * (endX - curX) + (endZ - curZ) * (endZ - curZ));
@@ -316,7 +331,7 @@ public class Controller : MonoBehaviour {
 			pos.z += slideAmount * translation.z;
 			transform.position = pos;
 			distTraveled += slideAmount;
-			yield return 0;
+			//yield return 0;
 		}
 		//Clamp the position
 		Vector3 tmp = transform.position;
@@ -369,6 +384,7 @@ public class Controller : MonoBehaviour {
 			yield return 0;
 		}
 		moving = false;
+		lastMove_ = Direction.negY;
 	}
 
 	public IEnumerator FallToDeath()

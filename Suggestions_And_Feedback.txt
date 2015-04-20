@@ -5,3 +5,4 @@
 * Symbols on teleport? Don't show white, its jarring
 * Maybe replace start and end tiles
 * End of level...show opened package based on how many moves the player took.
+*Ice face attached as  return label in freezer, wrong preson.

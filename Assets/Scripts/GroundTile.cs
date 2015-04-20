@@ -12,6 +12,7 @@ public enum TerrainType {
 	temporary,
 	null_exist
 }
+
 public class GroundTile : MonoBehaviour {
 
 	public TerrainType TerrType;
@@ -26,6 +27,7 @@ public class GroundTile : MonoBehaviour {
 
 	public virtual void PlayerLand()
 	{
+		GetComponent<AudioSource>().Play ();
 	}
 
 	public virtual void PlayerLeave()

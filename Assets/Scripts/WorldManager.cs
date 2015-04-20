@@ -9,7 +9,8 @@ public enum Direction
 	posX,
 	negX,
 	posZ,
-	negZ
+	negZ,
+	negY
 }
 
 public class WorldManager : MonoBehaviour
@@ -19,18 +20,25 @@ public class WorldManager : MonoBehaviour
 	private CameraMovement CM;
 
 	public GameObject PlayerPrefab;
-	//These hold the players face types. Settable in editor.
+	public GameObject TextPrefab;
+	//These hold the players face types. Settablex in editor.
 	public PlayerFaceType top, bottom, posX, negX, posZ, negZ;
-
-	public Canvas StartUI;
+	
+	public Image BlackScreen;
 	private bool firstime = true;
 
 	public Canvas WinUI;
-	public string NextSceneName;
+	private int levelNum;
+
+	public string[] endMessages;
+
+	public Canvas LevelCanvas;
+	public Text moveCount;
 
 
 	//This is the instance of the player that is created from PlayerPrefab.
 	private GameObject PlayerInst;
+	private GameObject endText;
 	private bool IsPlaying;
 	public bool CurPlaying{
 		get { return IsPlaying;}
@@ -39,8 +47,36 @@ public class WorldManager : MonoBehaviour
 	private GroundTile[] tiles;
 	private GroundTile ToRemove;
 
+	private GameObject indicator;
+
 	void Start()
 	{
+
+		if (WinUI == null) {
+			WinUI = GameObject.Find ("Level_Win_Canvas").GetComponent<Canvas>();
+			WinUI.gameObject.SetActive (false);
+		}
+		if (BlackScreen == null) {
+			BlackScreen = Instantiate ( Resources.Load ("Black_Screen") as GameObject).GetComponentInChildren<Image>();
+		}
+		BlackScreen.gameObject.SetActive (false);
+		if (LevelCanvas == null) {
+			LevelCanvas = (Instantiate (Resources.Load ("Level_Canvas")) as GameObject).GetComponent<Canvas>();
+			moveCount = GameObject.Find ("scoreText").GetComponent<Text>();
+			Button tmp =  LevelCanvas.GetComponentInChildren<Button>();
+			tmp.onClick.AddListener(() =>{ResetPlayer ();});
+			LevelCanvas.gameObject.SetActive(true);
+		}
+
+		if (GameObject.Find ("Background_Music") == null) {
+			Instantiate(Resources.Load ("Background_Music") as GameObject);
+		}
+		
+
+		//Parse level name into the level number.
+		string name = Application.loadedLevelName;
+		int index = name.LastIndexOf ('_'); 
+		levelNum = System.Convert.ToInt32(name.Substring (index + 1, name.Length - (index + 1)));
 
 		//Load the level into an array.
 		//This isn't the most efficient way to parse the level,
@@ -58,6 +94,16 @@ public class WorldManager : MonoBehaviour
 		                                            PlayerPrefab.transform.rotation);
 		PlayerInst.name = "Player";
 
+		//the direction indicator
+		indicator = Instantiate (Resources.Load ("indicator") as GameObject);
+		Vector3 indicatorTemp;
+
+		indicatorTemp.x = PlayerInst.transform.position.x;
+		indicatorTemp.y = PlayerInst.transform.position.y + 1;
+		indicatorTemp.z = PlayerInst.transform.position.z;
+
+		indicator.transform.position = indicatorTemp;
+
 		//Set the faces of the model.
 		PlayerCube model = PlayerInst.GetComponent<PlayerCube> ();
 		model.Top = top;
@@ -72,11 +118,10 @@ public class WorldManager : MonoBehaviour
 
 		//open start UI panel
 		Debug.Log ("Replay: " + PlayerPrefs.GetInt("Replay"));
-		if (PlayerPrefs.GetInt ("Replay") == 0) {
-			StartLevel ();
-		} else {
-			StartButton ();
-		}
+		//if (PlayerPrefs.GetInt ("Replay") == 0) {
+		//		StartLevel ();
+		//}
+		StartLevel ();
 
 		//Allow World to Respond to input.
 		//IsPlaying = true;
@@ -88,6 +133,7 @@ public class WorldManager : MonoBehaviour
 		//resetCamera
 		CM.resetCamera ();
 
+
 		//Set the
 		ToRemove = null;
 	}
@@ -95,6 +141,26 @@ public class WorldManager : MonoBehaviour
 	void Update()
 	{
 		direction = CM.direction;
+
+		//update the indicator position and angle
+		Vector3 indicatorTemp;
+		
+		indicatorTemp.x = PlayerInst.transform.position.x;
+		indicatorTemp.y = PlayerInst.transform.position.y + 1;
+		indicatorTemp.z = PlayerInst.transform.position.z;
+		
+		indicator.transform.position = indicatorTemp;
+
+		if (direction == 1) {
+			indicator.transform.eulerAngles = new Vector3 (0, 180, 0);
+		} else if (direction == 2) {
+			indicator.transform.eulerAngles = new Vector3 (0, 270, 0);
+		} else if (direction == 3) {
+			indicator.transform.eulerAngles = new Vector3 (0, 0, 0);
+		} else if (direction == 4) {
+			indicator.transform.eulerAngles = new Vector3 (0, 90, 0);
+		}
+
 		//Ignore Input until GameState is set to playing.
 		if (IsPlaying) {
 			if(!PlayerInst.GetComponent<Controller>().Moving) {
@@ -107,19 +173,14 @@ public class WorldManager : MonoBehaviour
 				ResetPlayer ();
 			}
 		}
+		moveCount.text = "Moves: " + PlayerInst.GetComponent<Controller> ().moveCounter;
 	}
 
 	void updateDirection(int dir){
 		direction = dir;
 	}
 
-	public void LoadNextLevel()
-	{
-		PlayerPrefs.DeleteKey ("Replay");
-		Application.LoadLevel(NextSceneName);
-	}
-
-private void HandleInput() {
+	private void HandleInput() {
 		float curX = PlayerInst.transform.position.x;
 		float curY = PlayerInst.transform.position.y - 1.0f;
 		float curZ = PlayerInst.transform.position.z;
@@ -270,17 +331,26 @@ private void HandleInput() {
 	//Essentially Checks if there is a block in the given x, z location.
 	private int CanMove(float x, float y, float z)
 	{
+		RaycastHit hit;
 		if (System.Array.Exists (tiles,
 		                        tile => tile.transform.position.x == x
 			&& tile.transform.position.z == z
 			&& tile.transform.position.y == (y + 1.0f))) {
-	//		Debug.Log ("find upper");
-			return 1;
+			if (!System.Array.Exists (tiles,
+														tile => tile.transform.position.x == x
+				&& tile.transform.position.z == z
+				&& tile.transform.position.y == (y + 2.0f))) {
+				return 1;
+			} else {
+				return 9;
+			}
 		} else if (System.Array.Exists (tiles,
 		                              tile => tile.transform.position.x == x
 			&& tile.transform.position.z == z
 			&& tile.transform.position.y == y)) {
-	//		Debug.Log ("find parallel");
+			//		Debug.Log ("find parallel");
+			return 0;
+		} else if (Physics.Raycast (new Vector3(x, y, z), Vector3.down * 100, out hit)) {
 			return 0;
 		} else if (System.Array.Exists (tiles,
 		                              tile => tile.transform.position.x == x
@@ -290,21 +360,24 @@ private void HandleInput() {
 			return -1;
 		} else {
 			//means no block adjacent
+			Debug.Log ("no adjacent");
 			return 9;
 		}
 	}
 
 	private GroundTile GetTileAtLoc(float x, float y, float z)
 	{
-		return System.Array.Find (tiles, tile => tile.transform.position.x == x
-		                   && tile.transform.position.y == y && tile.transform.position.z == z);
+		return System.Array.Find (tiles, tile => Mathf.Approximately(tile.transform.position.x, x)
+		                   && Mathf.Approximately(tile.transform.position.y, y)
+                           && Mathf.Approximately(tile.transform.position.z, z));
 	}
 
 	private TerrainType GetTileTerrAtLoc(float x, float y, float z)
 	{
 
-		GroundTile tile_ = System.Array.Find (tiles, tile => tile.transform.position.x == x
-		                          && tile.transform.position.y == y && tile.transform.position.z == z);
+		GroundTile tile_ = System.Array.Find (tiles, tile => Mathf.Approximately(tile.transform.position.x, x)
+		                          && Mathf.Approximately(tile.transform.position.y, y)
+                                  && Mathf.Approximately(tile.transform.position.z, z));
 		if (tile_ != null) {
 			return tile_.TerrType;
 		} else {
@@ -341,7 +414,9 @@ private void HandleInput() {
 				case Direction.negZ:
 					if(GetTileTerrAtLoc(x, y, z - 1) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlideNegZ();
-						GetTileAtLoc (x, y-1, z - 1).PlayerLand();
+						if(GetTileTerrAtLoc (x, y-1, z-1) != TerrainType.null_exist) {
+							GetTileAtLoc (x, y-1, z - 1).PlayerLand();
+						}
 					}
 					break;
 				case Direction.posZ:
@@ -379,12 +454,13 @@ private void HandleInput() {
 			}
 			break;
 		case TerrainType.finish:
-			WinLevel();
+			IsPlaying = false;
+			StartCoroutine(WinLevel());
 			break;
 		}
 	}
 
-	private void ResetPlayer() {
+	public void ResetPlayer() {
 		PlayerPrefs.SetInt ("Replay", 1);
 		Application.LoadLevel (Application.loadedLevel);
 	}
@@ -394,36 +470,82 @@ private void HandleInput() {
 	 */
 	private void StartLevel()
 	{
-		if (firstime == true) {
+		IsPlaying = true;
+		/*&if (firstime == true) {
 			StartUI.gameObject.SetActive (true);
 			firstime = false;
 		} else {
 			IsPlaying = true;
-		}
+		}*/
 	}
-
-	/*
-	 * Onclick Start Button
-	 */
-	public void StartButton()
-	{
-		IsPlaying = true;
-		StartUI.gameObject.SetActive(false);
-	}
+	
 
 	public void QuitGame()
 	{
 		Application.Quit ();
 	}
 
-	/*
-	 * TODO: Make a you win screen with next level button.
-	 * Have it pop up here.
-	 */
-
-	private void WinLevel()
+	public void ToggleIndicator()
 	{
-		WinUI.gameObject.SetActive(true);
+		foreach (MeshRenderer mr in indicator.GetComponentsInChildren<MeshRenderer> ()) {
+			mr.enabled = !mr.enabled;
+		}
+	}
+
+
+	private IEnumerator WinLevel()
+	{
+		BlackScreen.gameObject.SetActive (true);
+		LevelCanvas.gameObject.SetActive (false);
+		//Play the level ending sound.s
+		AudioSource audio = GetComponent < AudioSource > ();
+		if (audio != null) {
+			yield return new WaitForSeconds (0.5f);
+			audio.Play ();
+		}
+
+		//Fade in a black screen.
+		float t = 0f;
+		while (BlackScreen.color.a < 1f) { 
+			t += Time.deltaTime * 0.1f;
+			BlackScreen.color = Color.Lerp (BlackScreen.color, Color.black, t);
+			yield return 0;
+		}
+		BlackScreen.color = Color.black;
+		if (audio != null) {
+			while (audio.isPlaying) {
+				yield return 0;
+			}
+		}
+
+		if (endMessages.Length > 0) {
+			endText = Instantiate (TextPrefab);
+			TextBox box = endText.GetComponentInChildren<TextBox> ();
+			box.messages = endMessages;
+
+			endText.transform.SetParent (BlackScreen.transform);
+			
+			RectTransform rect = endText.GetComponent<RectTransform> ();
+
+			//Reset the anchors of the rect.
+			rect.anchoredPosition = new Vector2 (0, 0);
+			rect.offsetMax = new Vector2 (0, 0);
+			rect.offsetMin = new Vector2 (0, 0);
+			yield return 0;
+
+			//Wait for the textbox to run through its text.
+
+			while (!box.Done) {
+				yield return 0;
+			}
+		}
+
+		//TODO: EndGame UI popup?
+
+		//Load the next Level
+		//yield return new WaitForSeconds (1);
+		PlayerPrefs.DeleteKey ("Replay");
+		Application.LoadLevel ("Level_" + (levelNum + 1));
 	}
 
 	private void TextureCubeFaces()
@@ -444,4 +566,5 @@ private void HandleInput() {
 			PlayerInst.transform.FindChild(dir).GetComponent<Renderer>().material = Resources.Load ("Materials/player_" + type.ToString ()) as Material;
 		}
 	}
+	
 }
