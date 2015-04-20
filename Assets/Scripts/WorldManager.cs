@@ -339,17 +339,17 @@ public class WorldManager : MonoBehaviour
 			&& tile.transform.position.z == z
 			&& tile.transform.position.y == (y + 1.0f))) {
 			if (!System.Array.Exists (tiles,
-														tile => tile.transform.position.x == x
-				&& tile.transform.position.z == z
-				&& tile.transform.position.y == (y + 2.0f))) {
+														tile => Mathf.Approximately(tile.transform.position.x, x)
+				&& Mathf.Approximately(tile.transform.position.z, z)
+				&& Mathf.Approximately(tile.transform.position.y, (y + 2.0f)))) {
 				return 1;
 			} else {
 				return 9;
 			}
 		} else if (System.Array.Exists (tiles,
-		                              tile => tile.transform.position.x == x
-			&& tile.transform.position.z == z
-			&& tile.transform.position.y == y)) {
+		                              tile => Mathf.Approximately(tile.transform.position.x, x)
+			&& Mathf.Approximately(tile.transform.position.z,z)
+			&& Mathf.Approximately(tile.transform.position.y, y))) {
 			//		Debug.Log ("find parallel");
 			return 0;
 		} else if (Physics.Raycast (new Vector3(x, y, z), Vector3.down * 100, out hit)) {
@@ -416,9 +416,7 @@ public class WorldManager : MonoBehaviour
 				case Direction.negZ:
 					if(GetTileTerrAtLoc(x, y, z - 1) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlideNegZ();
-						if(GetTileTerrAtLoc (x, y-1, z-1) != TerrainType.null_exist) {
-							GetTileAtLoc (x, y-1, z - 1).PlayerLand();
-						}
+						GetTileAtLoc (x, y-1, z - 1).PlayerLand();
 					}
 					break;
 				case Direction.posZ:
