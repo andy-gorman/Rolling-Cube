@@ -489,7 +489,6 @@ public class WorldManager : MonoBehaviour
 
 	public void ToggleIndicator()
 	{
-		Debug.Log ("Toggle");
 		foreach (MeshRenderer mr in indicator.GetComponentsInChildren<MeshRenderer> ()) {
 			mr.enabled = !mr.enabled;
 		}
