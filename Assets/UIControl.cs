@@ -17,6 +17,9 @@ public class UIControl : MonoBehaviour {
 	public int currentWorld = 1;
 	private GameObject[] worlds;
 	private GameObject mainMenu;
+	private GameObject helpPanel;
+	private GameObject btns;
+	private GameObject optionBtn;
 
 	private int worldCount = 4;
 
@@ -24,6 +27,9 @@ public class UIControl : MonoBehaviour {
 		worldGallery = GameObject.Find ("WorldGallery");
 		worlds = GameObject.FindGameObjectsWithTag ("WorldPanel");
 		mainMenu = GameObject.Find ("MainMenu");
+		helpPanel = GameObject.Find ("Help");
+		optionBtn = GameObject.Find ("OptionBtn");
+		btns = GameObject.Find ("Btns");
 //		worlds = worlds);
 //		for (int i = 0; i<worldCount; i++) {
 //			string name = "World"+(i+1);
@@ -36,54 +42,15 @@ public class UIControl : MonoBehaviour {
 
 		foreach(GameObject w in worlds){
 			w.SetActive(false);
-			Debug.Log ("World_");
+//			Debug.Log ("World_");
 		}
 		worldGallery.SetActive(false);
+		btns.SetActive (false);
+		helpPanel.SetActive (false);
+		optionBtn.SetActive(false);
 //		worlds[0].SetActive(true);
 	}
 
-
-	public void GoSelectWorld(){
-		mainMenu.SetActive (false);
-		worldGallery.SetActive(true);
-		startRot = menuBox.transform.rotation;
-		endRot = menuBox.transform.rotation * Quaternion.Euler (90,0,0);
-		startTime = Time.time;
-		onMove = true;
-	}
-
-	public void PrevWorld(){
-		if (currentWorld <= 1) {
-			return;
-		}
-//		Debug.Log ("PrevWorld");
-//		startPos = worldGalleryRect.position;
-//		endPos = startPos + new Vector3 (800, 0, 0);
-		startRot = menuBox.transform.rotation;
-		endRot = menuBox.transform.rotation * Quaternion.Euler (0,0,90);
-		startTime = Time.time;
-		onMove = true;
-		worlds[currentWorld-1].SetActive(false);
-		currentWorld --;
-
-//		worldGallery.
-	}
-
-	public void NextWorld(){
-		if (currentWorld >= worldCount) {
-			return;
-		}
-//		Debug.Log ("NextWorld");
-//		startPos = worldGalleryRect.position;
-//		endPos = startPos - new Vector3 (800, 0, 0);
-		startRot = menuBox.transform.rotation;
-		endRot = menuBox.transform.rotation * Quaternion.Euler (0,0,-90);
-		startTime = Time.time;
-		onMove = true;
-		worlds[currentWorld-1].SetActive(false);
-		currentWorld ++;
-//		menuBox.transform.Rotate (Vector3.up, Time.deltaTime*100f);
-	}
 
 	void OnGUI(){
 		if (Input.GetKeyDown (KeyCode.RightArrow)) {
@@ -112,6 +79,7 @@ public class UIControl : MonoBehaviour {
 //				worldGalleryRect.position = Vector3.Lerp (startPos, endPos, frac);
 			}else{
 				worlds[currentWorld-1].SetActive(true);
+				btns.SetActive (true);
 				onMove = false;
 			}
 		}
@@ -121,6 +89,8 @@ public class UIControl : MonoBehaviour {
 			if(frac <=1.2){
 				Camera.main.transform.position = Vector3.Lerp(startPos, endPos, frac );
 				//				worldGalleryRect.position = Vector3.Lerp (startPos, endPos, frac);
+			}else{
+				optionBtn.SetActive(true);
 			}
 		}
 	}
@@ -145,13 +115,23 @@ public class UIControl : MonoBehaviour {
 			GoOptions();
 			break;
 		case 5: //Help
-			//TODO Help
+			ShowHelpPanel();
 			break;
 		}
 	}
 
+	public void ShowHelpPanel(){
+		helpPanel.SetActive (true);
+	}
+
+	public void BackFromHelpPanel(){
+		helpPanel.SetActive (false);
+	}
 
 	public void GoOptions(){
+		if (onMove) {
+			return;
+		}
 		mainMenu.SetActive (false);
 		onCameraMove = true;
 		startPos = Camera.main.transform.position;
@@ -159,6 +139,85 @@ public class UIControl : MonoBehaviour {
 		startTime = Time.time;
 	}
 
+	public void BackFromOptions(){
+		if (onMove) {
+			return;
+		}
+		optionBtn.SetActive(false);
+		mainMenu.SetActive (true);
+		onCameraMove = true;
+		startPos = Camera.main.transform.position;
+		endPos = startPos - new Vector3 (-300, 200, 500);
+		startTime = Time.time;
+	}
+
+	public void BackFromSelectWorld(){
+		if (onMove) {
+			return;
+		}
+		menuBox.transform.rotation = Quaternion.Euler (90,0,0);
+		worldGallery.SetActive(false);
+		mainMenu.SetActive (true);
+		worlds[currentWorld-1].SetActive(false);
+		startRot = menuBox.transform.rotation;
+		endRot = menuBox.transform.rotation * Quaternion.Euler (-90,0,0);
+		startTime = Time.time;
+		onMove = true;
+	}
+	
+	
+	public void GoSelectWorld(){
+		if (onMove) {
+			return;
+		}
+		mainMenu.SetActive (false);
+		worldGallery.SetActive(true);
+		startRot = menuBox.transform.rotation;
+		endRot = menuBox.transform.rotation * Quaternion.Euler (90,0,0);
+		startTime = Time.time;
+		onMove = true;
+	}
+	
+	public void PrevWorld(){
+		if (onMove) {
+			return;
+		}
+		if (currentWorld <= 1) {
+			return;
+		}
+		//		Debug.Log ("PrevWorld");
+		//		startPos = worldGalleryRect.position;
+		//		endPos = startPos + new Vector3 (800, 0, 0);
+		startRot = menuBox.transform.rotation;
+		endRot = menuBox.transform.rotation * Quaternion.Euler (0,0,90);
+		startTime = Time.time;
+		onMove = true;
+		worlds[currentWorld-1].SetActive(false);
+		btns.SetActive (false);
+		currentWorld --;
+		
+		//		worldGallery.
+	}
+	
+	public void NextWorld(){
+		if (onMove) {
+			return;
+		}
+		if (currentWorld >= worldCount) {
+			return;
+		}
+		//		Debug.Log ("NextWorld");
+		//		startPos = worldGalleryRect.position;
+		//		endPos = startPos - new Vector3 (800, 0, 0);
+		startRot = menuBox.transform.rotation;
+		endRot = menuBox.transform.rotation * Quaternion.Euler (0,0,-90);
+		startTime = Time.time;
+		onMove = true;
+		worlds[currentWorld-1].SetActive(false);
+		btns.SetActive (false);
+		currentWorld ++;
+		//		menuBox.transform.Rotate (Vector3.up, Time.deltaTime*100f);
+	}
 //	void MoveObject (Vector3 startPos, Vector3 endPos, float time) {
 //		var i = 0.0;
 //		var rate = 1.0/time;

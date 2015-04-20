@@ -15,10 +15,10 @@ public enum Direction
 
 public class WorldManager : MonoBehaviour
 {
-
+	
 	private int direction;
 	private CameraMovement CM;
-
+	
 	public GameObject PlayerPrefab;
 	public GameObject TextPrefab;
 	//These hold the players face types. Settablex in editor.
@@ -26,16 +26,16 @@ public class WorldManager : MonoBehaviour
 	
 	public Image BlackScreen;
 	private bool firstime = true;
-
+	
 	public Canvas WinUI;
 	private int levelNum;
-
+	
 	public string[] endMessages;
-
+	
 	public Canvas LevelCanvas;
 	public Text moveCount;
-
-
+	
+	
 	//This is the instance of the player that is created from PlayerPrefab.
 	private GameObject PlayerInst;
 	private GameObject endText;
@@ -46,12 +46,12 @@ public class WorldManager : MonoBehaviour
 	private float startX, startZ;
 	private GroundTile[] tiles;
 	private GroundTile ToRemove;
-
+	
 	private GameObject indicator;
-
+	
 	void Start()
 	{
-
+		
 		if (WinUI == null) {
 			WinUI = GameObject.Find ("Level_Win_Canvas").GetComponent<Canvas>();
 			WinUI.gameObject.SetActive (false);
@@ -63,47 +63,51 @@ public class WorldManager : MonoBehaviour
 		if (LevelCanvas == null) {
 			LevelCanvas = (Instantiate (Resources.Load ("Level_Canvas")) as GameObject).GetComponent<Canvas>();
 			moveCount = GameObject.Find ("scoreText").GetComponent<Text>();
-			Button tmp =  LevelCanvas.GetComponentInChildren<Button>();
-			tmp.onClick.AddListener(() =>{ResetPlayer ();});
+			Button reset =  GameObject.Find ("Reset").GetComponent<Button>();
+			Button toggle = GameObject.Find ("Toggle_Indicator").GetComponent<Button>();
+			Button menu = GameObject.Find ("HomeBtn").GetComponent<Button>();
+			reset.onClick.AddListener(() =>{ResetPlayer ();});
+			toggle.onClick.AddListener(() => {ToggleIndicator();});
+			menu.onClick.AddListener(() => {BackHome();});
 			LevelCanvas.gameObject.SetActive(true);
 		}
-
+		
 		if (GameObject.Find ("Background_Music") == null) {
 			Instantiate(Resources.Load ("Background_Music") as GameObject);
 		}
 		
-
+		
 		//Parse level name into the level number.
 		string name = Application.loadedLevelName;
 		int index = name.LastIndexOf ('_'); 
 		levelNum = System.Convert.ToInt32(name.Substring (index + 1, name.Length - (index + 1)));
-
+		
 		//Load the level into an array.
 		//This isn't the most efficient way to parse the level,
 		//But they won't get to a size where it'll be a problem.
 		tiles = GameObject.FindObjectsOfType<GroundTile> ();
-
+		
 		//Find the start cube and add the player to it.
 		Transform start = System.Array.Find(tiles, tile => tile.TerrType == TerrainType.start).transform;
 		startX = start.position.x; startZ = start.position.z;
 		//Initialize Player at given start position
 		PlayerInst = (GameObject)Object.Instantiate(PlayerPrefab,
 		                                            new Vector3(startX,
-		            								start.position.y + 1f,
-		            								startZ),
+		            start.position.y + 1f,
+		            startZ),
 		                                            PlayerPrefab.transform.rotation);
 		PlayerInst.name = "Player";
-
+		
 		//the direction indicator
 		indicator = Instantiate (Resources.Load ("indicator") as GameObject);
 		Vector3 indicatorTemp;
-
+		
 		indicatorTemp.x = PlayerInst.transform.position.x;
 		indicatorTemp.y = PlayerInst.transform.position.y + 1;
 		indicatorTemp.z = PlayerInst.transform.position.z;
-
+		
 		indicator.transform.position = indicatorTemp;
-
+		
 		//Set the faces of the model.
 		PlayerCube model = PlayerInst.GetComponent<PlayerCube> ();
 		model.Top = top;
@@ -112,36 +116,36 @@ public class WorldManager : MonoBehaviour
 		model.NegZ = negZ;
 		model.NegX = negX;
 		model.PosX = posX;
-
+		
 		//Texture the cube appropriately.
 		TextureCubeFaces ();
-
+		
 		//open start UI panel
 		Debug.Log ("Replay: " + PlayerPrefs.GetInt("Replay"));
 		//if (PlayerPrefs.GetInt ("Replay") == 0) {
 		//		StartLevel ();
 		//}
 		StartLevel ();
-
+		
 		//Allow World to Respond to input.
 		//IsPlaying = true;
-
+		
 		//determine the operating way ,1 for positive is z+, 2 for positive is x+ , 3 for positive is z-, 4 for positive is x-;
 		direction = 1;
 		CM = GameObject.Find ("Main Camera").GetComponent<CameraMovement> ();
-
+		
 		//resetCamera
 		CM.resetCamera ();
-
-
+		
+		
 		//Set the
 		ToRemove = null;
 	}
-
+	
 	void Update()
 	{
 		direction = CM.direction;
-
+		
 		//update the indicator position and angle
 		Vector3 indicatorTemp;
 		
@@ -150,7 +154,7 @@ public class WorldManager : MonoBehaviour
 		indicatorTemp.z = PlayerInst.transform.position.z;
 		
 		indicator.transform.position = indicatorTemp;
-
+		
 		if (direction == 1) {
 			indicator.transform.eulerAngles = new Vector3 (0, 180, 0);
 		} else if (direction == 2) {
@@ -160,7 +164,7 @@ public class WorldManager : MonoBehaviour
 		} else if (direction == 4) {
 			indicator.transform.eulerAngles = new Vector3 (0, 90, 0);
 		}
-
+		
 		//Ignore Input until GameState is set to playing.
 		if (IsPlaying) {
 			if(!PlayerInst.GetComponent<Controller>().Moving) {
@@ -175,23 +179,23 @@ public class WorldManager : MonoBehaviour
 		}
 		moveCount.text = "Moves: " + PlayerInst.GetComponent<Controller> ().moveCounter;
 	}
-
+	
 	void updateDirection(int dir){
 		direction = dir;
 	}
-
+	
 	private void HandleInput() {
 		float curX = PlayerInst.transform.position.x;
 		float curY = PlayerInst.transform.position.y - 1.0f;
 		float curZ = PlayerInst.transform.position.z;
 		Controller controller = PlayerInst.GetComponent<Controller> ();
 		GroundTile curTile = GetTileAtLoc (curX, curY, curZ);
-
+		
 		//Move the player to corresponding direction if the level allows them to.
 		if ( (Input.GetButtonDown ("Left") && direction == 1) ||
-		     (Input.GetButtonDown ("Backward") && direction == 2) ||
-		     (Input.GetButtonDown ("Right") && direction == 3) ||
-		     (Input.GetButtonDown ("Forward") && direction == 4) ) {
+		    (Input.GetButtonDown ("Backward") && direction == 2) ||
+		    (Input.GetButtonDown ("Right") && direction == 3) ||
+		    (Input.GetButtonDown ("Forward") && direction == 4) ) {
 			if (CanMove (curX - 1, curY, curZ) == 0) {
 				controller.RollLeft();
 				curTile.PlayerLeave();
@@ -222,7 +226,7 @@ public class WorldManager : MonoBehaviour
 				}
 				GetTileAtLoc(curX - 1, curY - 1, curZ).PlayerLand ();
 			}
-
+			
 		} else if ((Input.GetButtonDown ("Right") && direction == 1) ||
 		           (Input.GetButtonDown ("Forward") && direction == 2) ||
 		           (Input.GetButtonDown ("Left") && direction == 3) ||
@@ -327,36 +331,36 @@ public class WorldManager : MonoBehaviour
 			}
 		}
 	}
-
+	
 	//Essentially Checks if there is a block in the given x, z location.
 	private int CanMove(float x, float y, float z)
 	{
 		RaycastHit hit;
 		if (System.Array.Exists (tiles,
-		                        tile => tile.transform.position.x == x
-			&& tile.transform.position.z == z
-			&& tile.transform.position.y == (y + 1.0f))) {
+		                         tile => tile.transform.position.x == x
+		                         && tile.transform.position.z == z
+		                         && tile.transform.position.y == (y + 1.0f))) {
 			if (!System.Array.Exists (tiles,
-														tile => tile.transform.position.x == x
-				&& tile.transform.position.z == z
-				&& tile.transform.position.y == (y + 2.0f))) {
+			                          tile => Mathf.Approximately(tile.transform.position.x, x)
+			                          && Mathf.Approximately(tile.transform.position.z, z)
+			                          && Mathf.Approximately(tile.transform.position.y, (y + 2.0f)))) {
 				return 1;
 			} else {
 				return 9;
 			}
 		} else if (System.Array.Exists (tiles,
-		                              tile => tile.transform.position.x == x
-			&& tile.transform.position.z == z
-			&& tile.transform.position.y == y)) {
+		                                tile => Mathf.Approximately(tile.transform.position.x, x)
+		                                && Mathf.Approximately(tile.transform.position.z,z)
+		                                && Mathf.Approximately(tile.transform.position.y, y))) {
 			//		Debug.Log ("find parallel");
 			return 0;
 		} else if (Physics.Raycast (new Vector3(x, y, z), Vector3.down * 100, out hit)) {
 			return 0;
 		} else if (System.Array.Exists (tiles,
-		                              tile => tile.transform.position.x == x
-			&& tile.transform.position.z == z
-			&& tile.transform.position.y == (y - 1.0f))) {
-	//		Debug.Log ("find lower");
+		                                tile => tile.transform.position.x == x
+		                                && tile.transform.position.z == z
+		                                && tile.transform.position.y == (y - 1.0f))) {
+			//		Debug.Log ("find lower");
 			return -1;
 		} else {
 			//means no block adjacent
@@ -364,27 +368,27 @@ public class WorldManager : MonoBehaviour
 			return 9;
 		}
 	}
-
+	
 	private GroundTile GetTileAtLoc(float x, float y, float z)
 	{
 		return System.Array.Find (tiles, tile => Mathf.Approximately(tile.transform.position.x, x)
-		                   && Mathf.Approximately(tile.transform.position.y, y)
-                           && Mathf.Approximately(tile.transform.position.z, z));
+		                          && Mathf.Approximately(tile.transform.position.y, y)
+		                          && Mathf.Approximately(tile.transform.position.z, z));
 	}
-
+	
 	private TerrainType GetTileTerrAtLoc(float x, float y, float z)
 	{
-
+		
 		GroundTile tile_ = System.Array.Find (tiles, tile => Mathf.Approximately(tile.transform.position.x, x)
-		                          && Mathf.Approximately(tile.transform.position.y, y)
-                                  && Mathf.Approximately(tile.transform.position.z, z));
+		                                      && Mathf.Approximately(tile.transform.position.y, y)
+		                                      && Mathf.Approximately(tile.transform.position.z, z));
 		if (tile_ != null) {
 			return tile_.TerrType;
 		} else {
 			return TerrainType.null_exist;
 		}
 	}
-
+	
 	private void CheckFaces() {
 		float x = PlayerInst.transform.position.x;
 		float z = PlayerInst.transform.position.z;
@@ -414,9 +418,7 @@ public class WorldManager : MonoBehaviour
 				case Direction.negZ:
 					if(GetTileTerrAtLoc(x, y, z - 1) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlideNegZ();
-						if(GetTileTerrAtLoc (x, y-1, z-1) != TerrainType.null_exist) {
-							GetTileAtLoc (x, y-1, z - 1).PlayerLand();
-						}
+						GetTileAtLoc (x, y-1, z - 1).PlayerLand();
 					}
 					break;
 				case Direction.posZ:
@@ -459,12 +461,12 @@ public class WorldManager : MonoBehaviour
 			break;
 		}
 	}
-
+	
 	public void ResetPlayer() {
 		PlayerPrefs.SetInt ("Replay", 1);
 		Application.LoadLevel (Application.loadedLevel);
 	}
-
+	
 	/*
 	 * Start UI Panel
 	 */
@@ -478,21 +480,25 @@ public class WorldManager : MonoBehaviour
 			IsPlaying = true;
 		}*/
 	}
-	
 
+	public void BackHome()
+	{
+		Application.LoadLevel ("Intro_Scene");
+	}
+	
 	public void QuitGame()
 	{
 		Application.Quit ();
 	}
-
+	
 	public void ToggleIndicator()
 	{
 		foreach (MeshRenderer mr in indicator.GetComponentsInChildren<MeshRenderer> ()) {
 			mr.enabled = !mr.enabled;
 		}
 	}
-
-
+	
+	
 	private IEnumerator WinLevel()
 	{
 		BlackScreen.gameObject.SetActive (true);
@@ -503,7 +509,7 @@ public class WorldManager : MonoBehaviour
 			yield return new WaitForSeconds (0.5f);
 			audio.Play ();
 		}
-
+		
 		//Fade in a black screen.
 		float t = 0f;
 		while (BlackScreen.color.a < 1f) { 
@@ -517,37 +523,37 @@ public class WorldManager : MonoBehaviour
 				yield return 0;
 			}
 		}
-
+		
 		if (endMessages.Length > 0) {
 			endText = Instantiate (TextPrefab);
 			TextBox box = endText.GetComponentInChildren<TextBox> ();
 			box.messages = endMessages;
-
+			
 			endText.transform.SetParent (BlackScreen.transform);
 			
 			RectTransform rect = endText.GetComponent<RectTransform> ();
-
+			
 			//Reset the anchors of the rect.
 			rect.anchoredPosition = new Vector2 (0, 0);
 			rect.offsetMax = new Vector2 (0, 0);
 			rect.offsetMin = new Vector2 (0, 0);
 			yield return 0;
-
+			
 			//Wait for the textbox to run through its text.
-
+			
 			while (!box.Done) {
 				yield return 0;
 			}
 		}
-
+		
 		//TODO: EndGame UI popup?
-
+		
 		//Load the next Level
 		//yield return new WaitForSeconds (1);
 		PlayerPrefs.DeleteKey ("Replay");
 		Application.LoadLevel ("Level_" + (levelNum + 1));
 	}
-
+	
 	private void TextureCubeFaces()
 	{
 		TextureCubeFace ("Top", top);
@@ -558,7 +564,7 @@ public class WorldManager : MonoBehaviour
 		TextureCubeFace ("NegX", negX);
 		PlayerInst.GetComponent<Controller> ().SetFaces ();
 	}
-
+	
 	private void TextureCubeFace(string dir, PlayerFaceType type)
 	{
 		if (type != PlayerFaceType.none) {
@@ -568,3 +574,4 @@ public class WorldManager : MonoBehaviour
 	}
 	
 }
+		
