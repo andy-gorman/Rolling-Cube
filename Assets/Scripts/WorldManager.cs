@@ -65,7 +65,7 @@ public class WorldManager : MonoBehaviour
 			moveCount = GameObject.Find ("scoreText").GetComponent<Text>();
 			Button tmp =  LevelCanvas.GetComponentInChildren<Button>();
 			tmp.onClick.AddListener(() =>{ResetPlayer ();});
-			LevelCanvas.gameObject.SetActive(false);
+			LevelCanvas.gameObject.SetActive(true);
 		}
 
 		if (GameObject.Find ("Background_Music") == null) {
@@ -360,21 +360,24 @@ public class WorldManager : MonoBehaviour
 			return -1;
 		} else {
 			//means no block adjacent
+			Debug.Log ("no adjacent");
 			return 9;
 		}
 	}
 
 	private GroundTile GetTileAtLoc(float x, float y, float z)
 	{
-		return System.Array.Find (tiles, tile => tile.transform.position.x == x
-		                   && tile.transform.position.y == y && tile.transform.position.z == z);
+		return System.Array.Find (tiles, tile => Mathf.Approximately(tile.transform.position.x, x)
+		                   && Mathf.Approximately(tile.transform.position.y, y)
+                           && Mathf.Approximately(tile.transform.position.z, z));
 	}
 
 	private TerrainType GetTileTerrAtLoc(float x, float y, float z)
 	{
 
-		GroundTile tile_ = System.Array.Find (tiles, tile => tile.transform.position.x == x
-		                          && tile.transform.position.y == y && tile.transform.position.z == z);
+		GroundTile tile_ = System.Array.Find (tiles, tile => Mathf.Approximately(tile.transform.position.x, x)
+		                          && Mathf.Approximately(tile.transform.position.y, y)
+                                  && Mathf.Approximately(tile.transform.position.z, z));
 		if (tile_ != null) {
 			return tile_.TerrType;
 		} else {
@@ -411,7 +414,9 @@ public class WorldManager : MonoBehaviour
 				case Direction.negZ:
 					if(GetTileTerrAtLoc(x, y, z - 1) == TerrainType.null_exist) {
 						PlayerInst.GetComponent<Controller>().SlideNegZ();
-						GetTileAtLoc (x, y-1, z - 1).PlayerLand();
+						if(GetTileTerrAtLoc (x, y-1, z-1) != TerrainType.null_exist) {
+							GetTileAtLoc (x, y-1, z - 1).PlayerLand();
+						}
 					}
 					break;
 				case Direction.posZ:
@@ -561,4 +566,5 @@ public class WorldManager : MonoBehaviour
 			PlayerInst.transform.FindChild(dir).GetComponent<Renderer>().material = Resources.Load ("Materials/player_" + type.ToString ()) as Material;
 		}
 	}
+	
 }
