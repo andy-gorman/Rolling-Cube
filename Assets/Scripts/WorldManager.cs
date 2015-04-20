@@ -513,7 +513,7 @@ public class WorldManager : MonoBehaviour
 		
 		//Fade in a black screen.
 		float t = 0f;
-		while (BlackScreen.color.a < 1f) { 
+		while (BlackScreen.color.a < 0.95f) { 
 			t += Time.deltaTime * 0.1f;
 			BlackScreen.color = Color.Lerp (BlackScreen.color, Color.black, t);
 			yield return 0;
