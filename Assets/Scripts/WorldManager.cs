@@ -64,8 +64,7 @@ public class WorldManager : MonoBehaviour
 			LevelCanvas = (Instantiate (Resources.Load ("Level_Canvas")) as GameObject).GetComponent<Canvas>();
 			moveCount = GameObject.Find ("scoreText").GetComponent<Text>();
 			Button reset =  GameObject.Find ("Reset").GetComponent<Button>();
-			Button toggle = GameObject.Find ("Toggle_Indicator").GetComponent<Button>();
-			Button menu = GameObject.Find ("Homebtn").GetComponent<Button>();
+			Button toggle = GameObject.Find ("Toggle_Indicator").GetComponent<Button>();;
 			reset.onClick.AddListener(() =>{ResetPlayer ();});
 			toggle.onClick.AddListener(() => {ToggleIndicator();});
 			LevelCanvas.gameObject.SetActive(true);
