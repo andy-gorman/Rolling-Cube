@@ -103,7 +103,7 @@ public class UIControl : MonoBehaviour {
 	public void ControlMenu(int itemIndex){
 		switch (itemIndex) {
 		case 1: //New Game
-			Application.LoadLevel ("Level_1");
+			Application.LoadLevel ("Level_0");
 			break;
 		case 2: //Continue
 			//TODO Continue
