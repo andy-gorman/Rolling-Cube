@@ -14,21 +14,23 @@ public class TeleportTile : GroundTile
 		GetComponent<MeshRenderer> ().material.color = color;
 		time = 0f;
 		fadingOut = false;
+		fadeColor = Color.Lerp (color, Color.white, 0.5f);
 	}
 
 	// Update is called once per frame
 	void Update ()
 	{
-		time += Time.deltaTime * 0.5f;
+		MeshRenderer mr = GetComponent<MeshRenderer> ();
+		time += Time.deltaTime;
 		if (fadingOut) {
-			GetComponent<MeshRenderer> ().material.color = Color.Lerp (color, Color.white, time);
+			mr.material.color = Color.Lerp (color, fadeColor, time);
 		} else {
-			GetComponent<MeshRenderer> ().material.color = Color.Lerp (fadeColor, color, time);
+			mr.material.color = Color.Lerp (fadeColor, color, time);
 		}
-		if(time > 0.5f) {
+		if(time > 1f) {
 			time = 0f;
 			fadingOut = !fadingOut;
-			fadeColor = GetComponent<MeshRenderer>().material.color;
+			//fadeColor = GetComponent<MeshRenderer>().material.color;
 		}
 	}
 }
