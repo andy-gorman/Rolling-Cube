@@ -23,9 +23,21 @@ public class UIControl : MonoBehaviour {
 
 	private int worldCount = 4;
 
+
+	int CompareObNames( GameObject x, GameObject y )
+	{
+		return x.name.CompareTo( y.name );
+	}
+
 	void Start(){
 		worldGallery = GameObject.Find ("WorldGallery");
 		worlds = GameObject.FindGameObjectsWithTag ("WorldPanel");
+		Array.Sort (worlds, CompareObNames);
+
+//		for (int i=0; i<worldCount; i++) {
+//			worlds[i] = GameObject.Find ("World1");
+//		}
+
 		mainMenu = GameObject.Find ("MainMenu");
 		helpPanel = GameObject.Find ("Help");
 		optionBtn = GameObject.Find ("OptionBtn");
@@ -90,6 +102,7 @@ public class UIControl : MonoBehaviour {
 				Camera.main.transform.position = Vector3.Lerp(startPos, endPos, frac );
 				//				worldGalleryRect.position = Vector3.Lerp (startPos, endPos, frac);
 			}else{
+				onCameraMove = false;
 				optionBtn.SetActive(true);
 			}
 		}
@@ -103,7 +116,7 @@ public class UIControl : MonoBehaviour {
 	public void ControlMenu(int itemIndex){
 		switch (itemIndex) {
 		case 1: //New Game
-			Application.LoadLevel ("Level_0");
+			Application.LoadLevel ("Level_1");
 			break;
 		case 2: //Continue
 			//TODO Continue
@@ -112,7 +125,7 @@ public class UIControl : MonoBehaviour {
 			GoSelectWorld();
 			break;
 		case 4: //Options
-			GoOptions();
+//			GoOptions();
 			break;
 		case 5: //Help
 			ShowHelpPanel();
