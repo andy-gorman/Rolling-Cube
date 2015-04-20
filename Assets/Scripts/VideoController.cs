@@ -3,7 +3,7 @@ using System.Collections;
 
 public class VideoController : MonoBehaviour {
 
-	private bool isStop = false;
+	public bool isStop = false;
 
 	public MovieTexture myMovie;
 	private GameObject menuBox;
