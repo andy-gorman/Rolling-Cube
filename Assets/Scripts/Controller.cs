@@ -380,6 +380,7 @@ public class Controller : MonoBehaviour {
 			yield return 0;
 		}
 		moving = false;
+		lastMove_ = Direction.negY;
 	}
 
 	public IEnumerator FallToDeath()

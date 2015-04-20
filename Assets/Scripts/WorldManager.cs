@@ -9,7 +9,8 @@ public enum Direction
 	posX,
 	negX,
 	posZ,
-	negZ
+	negZ,
+	negY
 }
 
 public class WorldManager : MonoBehaviour
